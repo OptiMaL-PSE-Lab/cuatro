@@ -1,8 +1,5 @@
-import cvxpy as cp
+
 import numpy as np
-import scipy.linalg as LA
-import matplotlib.pyplot as plt
-#from tomlkit import value
 import CUATRO.utilities as ut
 
 from CUATRO.samplers.sampling import sample_LHS

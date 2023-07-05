@@ -8,17 +8,7 @@ Created on Sun Jan 17 21:12:38 2021
 import cvxpy as cp
 import numpy as np
 import scipy.linalg as LA
-from scipy.optimize import minimize
-import matplotlib.pyplot as plt
-import random
-from scipy.stats import qmc
 from statistics import median
-
-import math
-import subprocess
-#import CUATRO_in_use.functions as f
-
-from typing import List, Tuple, Callable
 
 def quadratic_LA(X, Y, P, q, r):
     N = len(X)

@@ -1,10 +1,6 @@
-import cvxpy as cp
+
 import numpy as np
-import scipy.linalg as LA
-from scipy.optimize import minimize
-from scipy.stats import qmc
 from CUATRO.utilities import *
-import sys
 
 from CUATRO.samplers.sampling import sample_points_TIP
 

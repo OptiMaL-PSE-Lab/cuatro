@@ -2,13 +2,9 @@ import unittest
 
 from CUATRO.optimizer.CUATRO_optimizer_use import CUATRO
 import numpy as np
-import math
-import subprocess
-import matplotlib.pyplot as plt
-import CUATRO.functions as f
 
-from benchmarking.benchmark_problems.constraints.rosenbrock_constrained import rosenbrock_g1
-from benchmarking.benchmark_problems.constraints.rosenbrock_constrained import rosenbrock_g2
+from CUATRO.test_functions.constraints.rosenbrock_constrained import rosenbrock_g1
+from CUATRO.test_functions.constraints.rosenbrock_constrained import rosenbrock_g2
 
 
 def Rosenbrock(x):

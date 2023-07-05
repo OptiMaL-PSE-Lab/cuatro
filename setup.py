@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
 setup(
-    name='benchmarking',
+    name='CUATRO',
     packages=find_packages(),
 )

@@ -1,9 +1,6 @@
-import cvxpy as cp
+
 import numpy as np
-import scipy.linalg as LA
 from scipy.optimize import minimize
-import matplotlib.pyplot as plt
-import random
 from scipy.stats import qmc
 from statistics import median
 from CUATRO.utilities import sample_simulation

@@ -1,12 +1,6 @@
-import cvxpy as cp
+
 import numpy as np
-import scipy.linalg as LA
-from scipy.optimize import minimize
-import matplotlib.pyplot as plt
-import random
-from scipy.stats import qmc
 import CUATRO.utilities as ut
-import sys
 
 from CUATRO.samplers.sampling import sample_LHS
 from CUATRO.samplers.sampling import sample_points_opt
