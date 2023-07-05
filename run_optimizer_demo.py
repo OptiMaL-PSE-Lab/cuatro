@@ -1,11 +1,11 @@
 from CUATRO.optimizer.CUATRO_optimizer_use import CUATRO
 import numpy as np
 import math
-import subprocess
 import matplotlib.pyplot as plt
 import CUATRO.functions as f
-from benchmarking.benchmark_problems.constraints.rosenbrock_constrained import rosenbrock_g1
-from benchmarking.benchmark_problems.constraints.rosenbrock_constrained import rosenbrock_g2
+
+from CUATRO.test_functions.constraints.rosenbrock_constrained import rosenbrock_g1
+from CUATRO.test_functions.constraints.rosenbrock_constrained import rosenbrock_g2
 
 
 def Rosenbrock(x):
@@ -36,7 +36,6 @@ expl = None
 # inputs to optimise() method
 bounds = np.array([[-5,5],[-5,5]])
 max_f_eval = 200
-
 
 # CUATRO instance initialization and optimization
 CUATRO_inst = CUATRO(x0=x0, max_iter=max_it, N_min_samples=N_min_s, \
