@@ -382,9 +382,8 @@ def assign_solver(solver_name):
         solver_to_use = cp.SCS
     elif solver_name == 'MOSEK':
         solver_to_use = cp.MOSEK
-    # elif solver_name == 'Gurobi':
-    #     solver_to_use = cp.GUROBI
     else:
         raise ValueError('Incorrect solver specified')
     
     return solver_to_use
+

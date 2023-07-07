@@ -1,11 +1,10 @@
 from CUATRO.optimizer.CUATRO_optimizer_use import CUATRO
 import numpy as np
 import math
-import subprocess
 import matplotlib.pyplot as plt
 import CUATRO.functions as f
-from benchmarking.benchmark_problems.constraints.rosenbrock_constrained import rosenbrock_g1
-from benchmarking.benchmark_problems.constraints.rosenbrock_constrained import rosenbrock_g2
+from CUATRO.test_functions.constraints.rosenbrock_constrained import rosenbrock_g1
+from CUATRO.test_functions.constraints.rosenbrock_constrained import rosenbrock_g2
 
 #%% Problem solution
 
@@ -167,9 +166,8 @@ ax.set_ylim(bounds[1])
 plt.tight_layout()
 plt.show()
 
-# pdf_path = 'plot.pdf'
-# fig.savefig(pdf_path)
-# subprocess.Popen([pdf_path], shell=True)
+path = 'CUATRO/demos/figures/TIS_plot.jpg'
+fig.savefig(path)
 
 
 #%% Plot 2

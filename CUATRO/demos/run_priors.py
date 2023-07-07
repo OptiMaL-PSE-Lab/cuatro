@@ -1,11 +1,10 @@
 from CUATRO.optimizer.CUATRO_optimizer_use import CUATRO
 import numpy as np
 import math
-import subprocess
 import matplotlib.pyplot as plt
 import CUATRO.functions as f
-from benchmarking.benchmark_problems.constraints.rosenbrock_constrained import rosenbrock_g1
-from benchmarking.benchmark_problems.constraints.rosenbrock_constrained import rosenbrock_g2
+from CUATRO.test_functions.constraints.rosenbrock_constrained import rosenbrock_g1
+from CUATRO.test_functions.constraints.rosenbrock_constrained import rosenbrock_g2
 #import utils as ut
 
 
@@ -77,11 +76,14 @@ sampl = 'base'
 
 
 # CUATRO instance initialization and optimization #1 - to be used as prior evals in #2
-CUATRO_inst_prior = CUATRO(x0=x0, custom_params={'max_iter': max_it, 'N_min_samples': N_min_s, 'init_radius': init_radius, 'explore': 'sampling_region', 'sampling': sampl})
+custom_params={'max_iter': max_it, 'N_min_samples': N_min_s, 'init_radius': init_radius, 'explore': 'sampling_region', 'sampling': sampl}
+CUATRO_inst_prior = CUATRO(x0=x0,**custom_params)
 
 
-results_prior = CUATRO_inst_prior.optimise(sim, bounds = bounds, \
+results_prior = CUATRO_inst_prior.run_optimiser(sim, bounds = bounds, \
                              max_f_eval = max_f_eval)
+
+print(f"Best prior eval: {results_prior['f_best_so_far'][-1]}")
 
 print("\nDone generating prior evals\n\nOptimising using prior evals...\n")
 
@@ -100,10 +102,11 @@ g_prior = results_prior['g_store'][:2]
 #print(g_prior[0])
 
 # CUATRO instance initialization and optimization #2 - use prior evals
-CUATRO_inst = CUATRO(x0=x0, custom_params={'max_iter': max_it, 'N_min_samples': N_min_s, 'init_radius': init_radius, 'explore': 'sampling_region', 'sampling': sampl})
+custom_params = {'max_iter': max_it, 'N_min_samples': N_min_s, 'init_radius': init_radius, 'explore': 'sampling_region', 'sampling': sampl}
+CUATRO_inst = CUATRO(x0=x0, **custom_params)
 
 
-results = CUATRO_inst.optimise(sim, bounds = bounds, max_f_eval = max_f_eval, \
+results = CUATRO_inst.run_optimiser(sim, bounds = bounds, max_f_eval = max_f_eval, \
     prior_evals = {'X_samples_list' : X_prior, 'f_eval_list': f_prior, 'g_eval_list': g_prior,
     'bounds': [], 'x0_method': 'best eval'})
 
@@ -171,9 +174,8 @@ ax.set_ylim(bounds[1])
 plt.tight_layout()
 plt.show()
 
-pdf_path = 'plot.pdf'
-fig.savefig(pdf_path)
-subprocess.Popen([pdf_path], shell=True)
+path = 'CUATRO/demos/figures/priors_plot.jpg'
+fig.savefig(path)
 
 
 # #%% Plot 2

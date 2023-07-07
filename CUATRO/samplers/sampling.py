@@ -24,7 +24,7 @@ def sample_LHS(sim, bounds, N, rnd_seed = 1):
     return data_points, func_eval, g_eval, feas
 
 a = 0.1
-def sample_points_opt(center, radius, f, samples, bounds, N = 10):
+def sample_points_opt(center, radius, f, samples, bounds, N = 10): ## TODO: Check that this does not give too many points
     # used for:
     # base, sampling_region, exploit_explore
     new_samples = np.array([center])
@@ -76,7 +76,7 @@ def sample_points_feas_samp(center, radius, f, samples, bounds, ineq_coeff, N = 
         def trust_const(x): 
             return radius - np.linalg.norm(x-center)
         
-        "Added constraint for new samples, such that they must also satisfy the "\
+        # "Added constraint for new samples, such that they must also satisfy the "\
         "problem's quadratic approximation of all the inequality constraints"
         
         def ineq_const(x):

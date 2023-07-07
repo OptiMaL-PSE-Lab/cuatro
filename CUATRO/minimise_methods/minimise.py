@@ -76,14 +76,14 @@ def minimise(X_samples, feas_X, infeas_X, g_array, P, q, r, bounds, center, radi
             center_ = list(ut.quadratic_min(P, q, r, center, radius, bounds, solver_to_use))
         except:
             P = ut.make_PSD(P)
-            print(f"Failed to find center by minimising quadratic surrogate (all samples were feasible)")
+            print(f"Failed to find center by minimising quadratic surrogate (all samples were feasible). N_evals: {N_eval}. N_iter: {N_iter}")
             # logger.warn("Failed to find center by minimising quadratic surrogate (all samples were feasible)")
             # print(P)
             try:
                 center_ = list(ut.quadratic_min(P, q, r, center, radius, bounds, solver_to_use))
             except:
                 center_ = center
-                print(f"Failed to find center by minimising quadratic surrogate, even after updating P (all samples were feasible))")
+                print(f"Failed to find center by minimising quadratic surrogate, even after updating P (all samples were feasible)). N_evals: {N_eval}. N_iter: {N_iter}")
                 # logger.warn("Failed to find center by minimising quadratic surrogate, even after updating P (all samples were feasible))")
     return center_
 

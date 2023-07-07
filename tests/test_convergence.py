@@ -26,6 +26,7 @@ optimum = 0
 
 bounds = np.array([(-5.0, 5.0) for i in range(N_x)])
 x0 = np.array([(b[0] + b[1])/2 for b in bounds])
+x0_multiple = np.array([[0, 0.5], [0, -0.5]])
 init_radius = np.max([(b[1] - b[0])/2 for b in bounds])
 beta = 1e-3**(1/N)
 N_min_s = N/10
@@ -36,11 +37,11 @@ solvers = {
     'CUATRO_g': CUATRO(x0=x0, sampling='g', explore=None, method='global', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
     'CUATRO_l': CUATRO(x0=x0, sampling='g', explore=None, method='local', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
     'CUATRO_base': CUATRO(x0=x0, sampling='base', explore=None, N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
-    #'CUATRO_expl_expl': CUATRO_expl_expl,
+    #'CUATRO_expl_expl': CUATRO_expl_expl, # TODO: expl expl might not be great
     'CUATRO_feas_samp': CUATRO(x0=x0, sampling='base', explore='feasible_sampling', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
     'CUATRO_sampl_region': CUATRO(x0=x0, sampling='base', explore='sampling_region', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
     'CUATRO_TIS': CUATRO(x0=x0, sampling='base', explore='TIS', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
-    'CUATRO_TIP': CUATRO(x0=x0, sampling='base', explore='TIP', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius)
+    'CUATRO_TIP': CUATRO(x0=x0_multiple, sampling='base', explore='TIP', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius)
 }
 
 

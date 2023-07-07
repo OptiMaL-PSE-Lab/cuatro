@@ -76,7 +76,7 @@ class TestCustomParams(unittest.TestCase):
         vars_to_check = solver_instance.__dict__
         
         for var, var_value in vars_to_check.items():                
-            if var != 'x0':
+            if var != 'x0' and var != 'automatic_params': # TODO: implement testing for automatic_params
                self.assertTrue((var_value == setValues[var]), f"{var} parameter was not set correctly, and has value {var_value} instead of {setValues[var]}")
             self.assertTrue(np.array_equal(vars_to_check['x0'], setValues['x0']), f"x0 was not set correctly and has value {vars_to_check['x0']} instead of {setValues['x0']}")
          

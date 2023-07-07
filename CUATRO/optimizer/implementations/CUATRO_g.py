@@ -267,8 +267,8 @@ class CUATRO_g(CUATRO):
             try:
                 P, q, r = ut.quadratic_fitting(X_samples, y_samples, self.solver_to_use)
             except:
-                print('Mosek failed to find convex quadratic fit')
-                # logger.warn("Mosek failed to find convex quadratic fit")
+                print(f'Solver failed to find convex quadratic fit. N_iter: {N}')
+                # logger.warn("Solver failed to find convex quadratic fit")
                 
                 
             feas_X = X_samples.copy()[feas_samples == 1]

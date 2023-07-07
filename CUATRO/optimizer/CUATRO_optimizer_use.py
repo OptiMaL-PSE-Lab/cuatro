@@ -95,7 +95,7 @@ class CUATRO():
         min_restart_radius: int  = 2.0,
         conv_radius: int = 0.2,
         no_x0: int = 5,
-        rescale_radius: bool = False,
+        rescale_radius: bool = False, # TODO: default should be true + change it to new implementation
         solver_to_use: str = 'SCS',
         automatic_params: Optional[dict] = None
     ):
@@ -143,6 +143,7 @@ class CUATRO():
         assigned_solver = ut.assign_solver(solver_to_use)
         self.solver_to_use = assigned_solver
 
+        # TODO: implement automatic_params
         self.automatic_params = automatic_params
         if self.automatic_params:
             if self.automatic_params['exp'] == 'expensive':
