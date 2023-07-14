@@ -1,8 +1,8 @@
 import unittest
 
-from CUATRO.optimizer.CUATRO_optimizer_use import CUATRO
 import numpy as np
 
+from CUATRO.optimizer.CUATRO_optimizer_use import CUATRO
 from CUATRO.test_functions.constraints.rosenbrock_constrained import rosenbrock_g1
 from CUATRO.test_functions.constraints.rosenbrock_constrained import rosenbrock_g2
 

@@ -5,7 +5,6 @@ import CUATRO.utilities as ut
 from CUATRO.samplers.sampling import sample_LHS
 from CUATRO.samplers.sampling import sample_points
 from CUATRO.minimise_methods.minimise import minimise
-import sys
 
 from CUATRO.optimizer.CUATRO_optimizer_use import CUATRO
 
@@ -34,25 +33,23 @@ class CUATRO_g(CUATRO):
         
         if (len(prior_evals['X_samples_list']) == 0) and (not (isinstance(self.x0, np.ndarray))):
             raise ValueError("You've specified neither prior function evaluations nor a valid x0 array")
-        
+
         if (len(prior_evals['X_samples_list']) != len(prior_evals['f_eval_list'])) or (len(prior_evals['X_samples_list']) != len(prior_evals['g_eval_list'])):
             raise ValueError('Elements of prior evaluation input lists should correspond to each other')
 
         if prior_evals['x0_method'] not in ['best eval', 'bound center']:
             raise ValueError('Please enter a valid method of obtaining the initial guess value')
 
-
         X_samples_list = prior_evals['X_samples_list'].copy()
         f_eval_list = prior_evals['f_eval_list'].copy()
         g_eval_list = prior_evals['g_eval_list'].copy()
 
-        
+
         steps = []
         best_x = [] ; best_f = [] ; best_g = []
         radius_list = [] ; nbr_samples_list = []
         
         np.random.seed(rnd)
-        
         if len(X_samples_list) == 0:
             center_ = list(self.x0)
             no_of_prior_feas_x = 0
@@ -72,43 +69,29 @@ class CUATRO_g(CUATRO):
             else:
                 center_ = prior_evals['bounds'].mean(axis=1) 
 
-        
         radius = self.init_radius
         center = [float(c) for c in center_]
-
         
         f_eval, g_eval, feas = ut.sample_simulation(center, sim)
         new_f = f_eval[0]
-        
+
         if feas == 0:
             raise ValueError("Please enter feasible starting point")
-        
+
         X_samples_list += [center]
         steps += [center]
         f_eval_list += [new_f]
         g_eval_list += g_eval
 
-        # """
-        # """
-        # no_of_feas_X = 1
-        # """
-        # """
-        # best_x = X_samples_list.copy()
-        # best_f = f_eval_list.copy()
-        # best_g = g_eval_list.copy()
-
         # TODO fix (?) would we have to add 1 if center was already an evaluated x (e.g. corresponding to best f eval, as in heuristic #2)
         no_of_feas_X = 1 + no_of_prior_feas_x
         no_of_infeas_X = no_of_prior_infeas_x
-        
 
         best_x, best_f, best_g = ut.update_best_lists(X_samples_list, \
                                                 f_eval_list, g_eval_list,  \
                                                 best_x, best_f, best_g)
-            
         radius_list += [self.init_radius]
         nbr_samples_list += [len(f_eval_list)]
-        
         X_in_trust, y_in_trust, g_in_trust, feas_in_trust = ut.samples_in_trust(center, radius, \
                                                                     X_samples_list, f_eval_list, g_eval_list)
 
@@ -125,13 +108,12 @@ class CUATRO_g(CUATRO):
             else:
                 raise ValueError('Invalid input for method')
 
-
             feas_new_X = X_samples.copy()[feas == 1]
             infeas_new_X = X_samples.copy()[feas != 1]
             
             no_of_feas_X += len(feas_new_X)
             no_of_infeas_X += len(infeas_new_X)
-        
+
             X_samples_list += X_samples.tolist()
             f_eval_list += y_samples
             g_eval_list += g_eval
@@ -147,8 +129,6 @@ class CUATRO_g(CUATRO):
             y_samples = y_in_trust.copy()
             g_eval = g_eval.copy()
             feas = feas_in_trust.copy()
-        
-
 
         old_trust = center
         old_f = best_f[0]
@@ -244,21 +224,16 @@ class CUATRO_g(CUATRO):
             
             X_samples, y_samples, g_eval, feas_samples =  sample_points(center, radius, sim, \
                                                                         bounds, N = N_s)
-            """
-            """
+            
             feas_new_X = X_samples.copy()[feas_samples == 1]
             infeas_new_X = X_samples.copy()[feas_samples != 1]
-            
             no_of_feas_X += len(feas_new_X)
             no_of_infeas_X += len(infeas_new_X)
-            """
-            """
-        
+
             X_samples_list += X_samples.tolist()
             f_eval_list += y_samples
             g_eval_list += g_eval
-            
-            
+
             X_samples = np.array(X_in_trust.tolist() + X_samples.tolist())
             y_samples = np.array(y_in_trust.tolist() + y_samples)
             g_samples = np.array(g_in_trust.tolist() + g_eval)
@@ -280,22 +255,20 @@ class CUATRO_g(CUATRO):
                 
                 center_ = minimise(X_samples, feas_X, infeas_X, g_samples, P, q, r, bounds, \
                             center, radius, self.constr_handling, N_iter=N, N_eval=N_evals, solver_to_use=self.solver_to_use)
-                
                 center = [float(c) for c in center_]
             
                 f_eval, g_eval, new_feas = ut.sample_simulation(center, sim)
                 new_f = f_eval[0]
-                """
-                """
+
                 if new_feas == 1:
                     no_of_feas_X += 1
                 else:
-                    no_of_infeas_X += 1            
-                """
-                """
+                    no_of_infeas_X += 1
+
                 X_samples_list += [center]
                 f_eval_list += [new_f]
                 g_eval_list += g_eval
+
                 X = np.array(center).reshape(-1,1)
                 new_pred_f = X.T @ P @ X + q.T @ X + r         
         
@@ -310,19 +283,17 @@ class CUATRO_g(CUATRO):
         N_evals = len(f_eval_list) - len(prior_evals['f_eval_list'])
         radius_list += [radius] 
         nbr_samples_list += [len(f_eval_list)]
-        
-    
+
         if N > self.max_iter:
             status = "Max # of iterations reached"
         elif radius < self.tolerance:
             status = "Radius below threshold"
         else:
             status = "Max # of function evaluations"
-        
+
         if self.print_status:
             print('Minimisation terminated: ', status)
-        """
-        """
+            
         # logger.warn(f"Minimisation terminated: {status}")
 
         constr_violation = 1 - (no_of_feas_X/len(X_samples_list))
