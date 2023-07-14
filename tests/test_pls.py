@@ -70,7 +70,7 @@ N_min_s = N/10
 tol= 1e-8
 
 CUATRO_inst = CUATRO(x0=x0, sampling='g', explore=None, method='local', N_min_samples=6, beta_red=beta, tolerance=tol, init_radius=init_radius, dim_red=True)
-CUATRO_bench = CUATRO(x0=x0, sampling='g', explore=None, method='local', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius, max_iter=N)
+CUATRO_bench = CUATRO(x0=x0, sampling='g', explore=None, method='local', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius)
 
 
 f_RB = partial(sim, N_high)

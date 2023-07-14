@@ -19,7 +19,7 @@ def sim(x):
     return f1(x), []
 
 conv_rad = 1e-02
-N = 1000
+N = 500
 N_x = 2
 
 optimum = 0

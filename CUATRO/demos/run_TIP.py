@@ -103,7 +103,6 @@ x0 = sobol(np.array([0,0]), 5, m=3)
 # known_opt = np.array([1,1])
 
 max_f_eval = 200
-max_it = 100
 
 # Please note, N_min_s will be distributed across all trajectories for each
 # step, so a higher value is recommended
@@ -115,13 +114,13 @@ sampl = 'base'
 
 
 # CUATRO instance initialization and optimization
-# CUATRO_inst = CUATRO(x0=x0, custom_params={'max_iter': max_it, 'N_min_samples': N_min_s, 'init_radius': init_radius, 'explore': 'TIP', 'sampling': sampl})
+# CUATRO_inst = CUATRO(x0=x0, custom_params={'N_min_samples': N_min_s, 'init_radius': init_radius, 'explore': 'TIP', 'sampling': sampl})
 
 
 # results = CUATRO_inst.optimise(sim, bounds = bounds, \
 #                              max_f_eval = max_f_eval)
 
-CUATRO_inst = CUATRO(x0=x0, max_iter=max_it, N_min_samples=N_min_s, \
+CUATRO_inst = CUATRO(x0=x0, N_min_samples=N_min_s, \
      init_radius=init_radius, explore='TIP', sampling=sampl, solver_to_use='SCS')
 
 results = CUATRO_inst.run_optimiser(sim=sim, bounds=bounds, max_f_eval=max_f_eval)

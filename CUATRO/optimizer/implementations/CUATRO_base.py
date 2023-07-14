@@ -176,7 +176,7 @@ class CUATRO_base(CUATRO):
         
         N = 1
         
-        while ((len(f_eval_list) - len(prior_evals['f_eval_list'])) < max_f_eval - 1) and (N <= self.max_iter) and (radius > self.tolerance):
+        while ((len(f_eval_list) - len(prior_evals['f_eval_list'])) < max_f_eval - 1) and (radius > self.tolerance):
             
             N_evals = len(f_eval_list) - len(prior_evals['f_eval_list'])
 
@@ -284,9 +284,7 @@ class CUATRO_base(CUATRO):
         nbr_samples_list += [len(f_eval_list)]
     
         status = ""
-        if N > self.max_iter:
-            status = "Max # of iterations reached"
-        elif radius < self.tolerance:
+        if radius < self.tolerance:
             status = "Radius below threshold"
         else:
             status = "Max # of function evaluations"

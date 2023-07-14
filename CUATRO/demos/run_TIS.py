@@ -62,7 +62,6 @@ x0 = np.array([0.75, 1])
 
 
 max_f_eval = 200
-max_it = 50
 
 N_min_s = 15
 init_radius = 0.1*sum(bounds[i][1]-bounds[i][0] \
@@ -76,7 +75,7 @@ sampl = 'base'
 
 
 # # CUATRO instance initialization and optimization
-# CUATRO_inst = CUATRO(x0=x0, custom_params={'max_iter': max_it, 'N_min_samples': N_min_s, 'init_radius': init_radius,
+# CUATRO_inst = CUATRO(x0=x0, custom_params={'N_min_samples': N_min_s, 'init_radius': init_radius,
 # 'explore': 'TIS', 'sampling': sampl, 'min_radius': min_radius, 'min_restart_radius': min_restart_radius,
 #     'conv_radius': conv_radius})
 
@@ -85,7 +84,7 @@ sampl = 'base'
 #                              max_f_eval = max_f_eval)
 
 # CUATRO instance initialization and optimization
-CUATRO_inst = CUATRO(x0=x0, max_iter=max_it, N_min_samples=N_min_s, \
+CUATRO_inst = CUATRO(x0=x0, N_min_samples=N_min_s, \
      init_radius=init_radius, explore='TIS', sampling=sampl, solver_to_use='SCS', min_radius=min_radius, \
          min_restart_radius=min_restart_radius, conv_radius=conv_radius)
 

@@ -45,7 +45,7 @@ class CUATRO_PLS(CUATRO):
             raise NotImplementedError("CUATRO_PLS is not yet implemented for explicit constraint handling \n g_eval_list in prior_evals should be an empty list")
     
 
-        if n_pls is None: # if no knowledge about n_e is given, usse heuristics to determine effective dim.
+        if n_pls is None: # if no knowledge about n_e is given, use heuristics to determine effective dim.
             n_pls = int(max_f_eval / 10)
 
         if (len(prior_evals['X_samples_list']) == 0) and (not (isinstance(self.x0, np.ndarray))):
@@ -57,8 +57,6 @@ class CUATRO_PLS(CUATRO):
         if prior_evals['x0_method'] not in ['best eval', 'bound center']:
             raise ValueError('Please enter a valid method of obtaining the initial guess value')
 
-
-        self.max_iter = max(self.max_iter, max_f_eval)
 
         X_samples_list = prior_evals['X_samples_list'].copy()
         f_eval_list = prior_evals['f_eval_list'].copy()
@@ -221,7 +219,7 @@ class CUATRO_PLS(CUATRO):
     
         # t1 = time.process_time() 
         # t_it = []; t_center_select = []; t_sample = []; t_minimise = []
-        while ((len(f_eval_list) - len(prior_evals['f_eval_list'])) < max_f_eval - 1) and (N <= self.max_iter) and (radius > self.tolerance):
+        while ((len(f_eval_list) - len(prior_evals['f_eval_list'])) < max_f_eval - 1)  and (radius > self.tolerance):
             # ti = time.process_time()
             N_evals = len(f_eval_list) - len(prior_evals['f_eval_list'])
 
@@ -354,9 +352,7 @@ class CUATRO_PLS(CUATRO):
         radius_list += [radius] 
         nbr_samples_list += [len(f_eval_list)]
 
-        if N > self.max_iter:
-            status = "Max # of iterations reached"
-        elif radius < self.tolerance:
+        if radius < self.tolerance:
             status = "Radius below threshold"
         else:
             status = "Max # of function evaluations"

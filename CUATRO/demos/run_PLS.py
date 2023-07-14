@@ -41,8 +41,8 @@ for dim in dims:
     bounds = np.array([(-5,5) for _ in range(dim)])
     x0 = np.array([0 for _ in range(dim)])
 
-    CUATRO_PLS = CUATRO(x0=x0, sampling='g', explore=None, method='local', N_min_samples=N_min_PLS, beta_red=beta, tolerance=tol, init_radius=init_radius, dim_red=True, max_iter=budget)
-    CUATRO_bench = CUATRO(x0=x0, sampling='g', explore=None, method='local', N_min_samples=N_min_g, beta_red=beta, tolerance=tol, init_radius=init_radius, max_iter=budget)
+    CUATRO_PLS = CUATRO(x0=x0, sampling='g', explore=None, method='local', N_min_samples=N_min_PLS, beta_red=beta, tolerance=tol, init_radius=init_radius, dim_red=True)
+    CUATRO_bench = CUATRO(x0=x0, sampling='g', explore=None, method='local', N_min_samples=N_min_g, beta_red=beta, tolerance=tol, init_radius=init_radius)
 
     t0 = perf_counter()
     res_PLS = CUATRO_PLS.run_optimiser(sim=obj, bounds=bounds, max_f_eval=budget, rnd=0, n_pls=n_e)

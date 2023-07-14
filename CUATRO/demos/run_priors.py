@@ -64,7 +64,6 @@ x0 = np.array([-1.5,-0.5])
 #x0 = ut.sobol(np.array([0,0]), 5, m=3)
 
 max_f_eval = 100
-max_it = 50
 N_min_s = 10
 init_radius = 0.5
 
@@ -76,7 +75,7 @@ sampl = 'base'
 
 
 # CUATRO instance initialization and optimization #1 - to be used as prior evals in #2
-custom_params={'max_iter': max_it, 'N_min_samples': N_min_s, 'init_radius': init_radius, 'explore': 'sampling_region', 'sampling': sampl}
+custom_params={'N_min_samples': N_min_s, 'init_radius': init_radius, 'explore': 'sampling_region', 'sampling': sampl}
 CUATRO_inst_prior = CUATRO(x0=x0,**custom_params)
 
 
@@ -102,7 +101,7 @@ g_prior = results_prior['g_store'][:2]
 #print(g_prior[0])
 
 # CUATRO instance initialization and optimization #2 - use prior evals
-custom_params = {'max_iter': max_it, 'N_min_samples': N_min_s, 'init_radius': init_radius, 'explore': 'sampling_region', 'sampling': sampl}
+custom_params = {'N_min_samples': N_min_s, 'init_radius': init_radius, 'explore': 'sampling_region', 'sampling': sampl}
 CUATRO_inst = CUATRO(x0=x0, **custom_params)
 
 

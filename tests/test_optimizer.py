@@ -28,7 +28,6 @@ class TestCustomParams(unittest.TestCase):
         # the non-default values
         setValues = {'x0': np.array([-1.5,-1.5]),
                      'init_radius': 0.5,
-                     'max_iter': 150,
                      'tolerance': 1e-09,
                      'beta_inc': 1.25,
                      'beta_red': 0.9,
@@ -52,7 +51,6 @@ class TestCustomParams(unittest.TestCase):
         
         solver_instance = CUATRO(x0 = np.array([-1.5,-1.5]),
                                  init_radius = 0.5,
-                                 max_iter = 150,
                                  tolerance = 1e-09,
                                  beta_inc = 1.25,
                                  beta_red = 0.9,
@@ -76,7 +74,7 @@ class TestCustomParams(unittest.TestCase):
         vars_to_check = solver_instance.__dict__
         
         for var, var_value in vars_to_check.items():                
-            if var != 'x0' and var != 'automatic_params': # TODO: implement testing for automatic_params
+            if var not in ['x0', 'automatic_params', 'dim_red']: # TODO: implement testing for automatic_params, dim_red
                self.assertTrue((var_value == setValues[var]), f"{var} parameter was not set correctly, and has value {var_value} instead of {setValues[var]}")
             self.assertTrue(np.array_equal(vars_to_check['x0'], setValues['x0']), f"x0 was not set correctly and has value {vars_to_check['x0']} instead of {setValues['x0']}")
          
@@ -114,40 +112,35 @@ class TestTolerance(unittest.TestCase):
     def runTest(self):
         """
         check whether tolerance is used successfully as a termination criterion;
-        set high value for tolerance, max_iter and max_f_eval
+        set high value for tolerance,  and max_f_eval
         """
         x0 = np.array([-1.5,-1.5])
 
         tol = 1e-03
-        max_it = 1000
         max_eval = 1000
 
-        solver_instance = CUATRO(x0=x0, tolerance=tol, max_iter=max_it)
+        solver_instance = CUATRO(x0=x0, tolerance=tol)
         results = solver_instance.run_optimiser(sim, max_f_eval=max_eval)
 
         self.assertTrue((results['N_eval'] < max_eval), "number of function evaluations is over the max allowed")
-        self.assertTrue((results['N_iter'] < max_it), "number of iterations is over the max allowed")
         self.assertTrue((results['TR'][-1] < tol), "radius was not smaller than tolerance")
 
 
 class TestBudget(unittest.TestCase):
     def runTest(self):
         """
-        check whether evaluation budget is used successfully as a termination criterion;
-        set high value for max_iter, low values for tolerance and max_f_eval
+        check whether evaluation budget is used successfully as a termination criterion;low values for tolerance and max_f_eval
         """
         x0 = np.array([-1.5,-1.5])
 
         tol = 1e-10
-        max_it = 10000
         max_eval = 100
         
         # set N_min_samples to max_f_eval - 2 to force edge case where N_eval can't reach max_f_eval (need to have enough samples in trust region as well to work)
-        solver_instance = CUATRO(x0=x0, tolerance=tol, max_iter=max_it, N_min_samples=15)
+        solver_instance = CUATRO(x0=x0, tolerance=tol, N_min_samples=15)
         results = solver_instance.run_optimiser(sim, max_f_eval=max_eval)
 
         self.assertTrue(((results['N_eval'] == max_eval) or (results['N_eval'] == max_eval-1)), f"number of function evaluations was not equal to max allowed, it was {results['N_eval']}")
-        self.assertTrue((results['N_iter'] < max_it), "number of iterations is over the max allowed")
         self.assertTrue((results['TR'][-1] > tol), "radius was not bigger than tolerance")
 
 
@@ -155,19 +148,17 @@ class TestIterations(unittest.TestCase):
     def runTest(self):
         """
         check whether number of iterations is used successfully as a termination criterion;
-        set high value for max_f_eval, low values for tolerance and max_iter
+        set high value for max_f_eval, low values for tolerance
         """
         x0 = np.array([-1.5,-1.5])
 
         tol = 1e-10
-        max_it = 100
         max_eval = 10000
 
-        solver_instance = CUATRO(x0=x0, tolerance=tol, max_iter=max_it)
+        solver_instance = CUATRO(x0=x0, tolerance=tol)
         results = solver_instance.run_optimiser(sim, max_f_eval=max_eval)
 
         self.assertTrue((results['N_eval'] < max_eval), "number of function evaluations was not smaller than max allowed")
-        self.assertTrue((results['N_iter'] == max_it+1), "number of iterations was not one greater than max allowed")
         self.assertTrue((results['TR'][-1] > tol), "radius was not bigger than tolerance")
 
 

@@ -53,19 +53,17 @@ class TestTolerancePriorData(unittest.TestCase):
     def runTest(self):
         """
         check whether tolerance is used successfully as a termination criterion when there's prior data available;
-        set high value for tolerance, max_iter and max_f_eval
+        set high value for tolerance, and max_f_eval
         """
         tol = 1e-03
-        max_it = 1000
         max_eval = 1000
 
-        solver_instance = CUATRO(x0=x0, tolerance=tol, max_iter=max_it, N_min_samples=N_min_s)
+        solver_instance = CUATRO(x0=x0, tolerance=tol, N_min_samples=N_min_s)
         results = solver_instance.run_optimiser(sim, bounds=bounds, max_f_eval=max_eval, \
             prior_evals={'X_samples_list' : X_prior, 'f_eval_list': f_prior, 'g_eval_list': g_prior,
         'bounds': [], 'x0_method': 'best eval'})
 
         self.assertTrue((results['N_eval'] < max_eval), "number of function evaluations is over the max allowed")
-        self.assertTrue((results['N_iter'] < max_it), "number of iterations is over the max allowed")
         self.assertTrue((results['TR'][-1] < tol), "radius was not smaller than tolerance")
 
 
@@ -73,19 +71,17 @@ class TestBudgetPriordata(unittest.TestCase):
     def runTest(self):
         """
         check whether evaluation budget is used successfully as a termination criterion when there's prior data available;
-        set high value for max_iter, low values for tolerance and max_f_eval
+        low values for tolerance and max_f_eval
         """
         tol = 1e-10
-        max_it = 10000
         max_eval = 50
 
-        solver_instance = CUATRO(x0=x0, tolerance=tol, max_iter=max_it, N_min_samples=N_min_s)
+        solver_instance = CUATRO(x0=x0, tolerance=tol, N_min_samples=N_min_s)
         results = solver_instance.run_optimiser(sim, bounds=bounds, max_f_eval=max_eval, \
             prior_evals={'X_samples_list' : X_prior, 'f_eval_list': f_prior, 'g_eval_list': g_prior,
         'bounds': [], 'x0_method': 'best eval'})
 
         self.assertTrue(((results['N_eval'] == max_eval) or (results['N_eval'] == max_eval-1)), f"number of function evaluations was not equal to max allowed, it was {results['N_eval']}")
-        self.assertTrue((results['N_iter'] < max_it), "number of iterations is over the max allowed")
         self.assertTrue((results['TR'][-1] > tol), "radius was not bigger than tolerance")
 
 
@@ -93,19 +89,16 @@ class TestIterationsPriordata(unittest.TestCase):
     def runTest(self):
         """
         check whether number of iterations is used successfully as a termination criterion when there's prior data available;
-        set high value for max_f_eval, low values for tolerance and max_iter
+        set high value for max_f_eval, low values for tolerance
         """
         tol = 1e-10
-        max_it = 100
         max_eval = 10000
 
-        solver_instance = CUATRO(x0=x0, tolerance=tol, max_iter=max_it, N_min_samples=N_min_s)
+        solver_instance = CUATRO(x0=x0, tolerance=tol, N_min_samples=N_min_s)
         results = solver_instance.run_optimiser(sim, bounds=bounds, max_f_eval=max_eval, \
             prior_evals={'X_samples_list' : X_prior, 'f_eval_list': f_prior, 'g_eval_list': g_prior,
         'bounds': [], 'x0_method': 'best eval'})
-
         self.assertTrue((results['N_eval'] < max_eval), "number of function evaluations was not smaller than max allowed")
-        self.assertTrue((results['N_iter'] == max_it+1), "number of iterations was not one greater than max allowed")
         self.assertTrue((results['TR'][-1] > tol), "radius was not bigger than tolerance")
         
 

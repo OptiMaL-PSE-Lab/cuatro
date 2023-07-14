@@ -17,9 +17,6 @@ class CUATRO():
     x0:               initial guess in form [x1,x2,...,xn]
         
     init_radius:      initial trust region radius
-                    
-    max_iter:         total optimisation iterations due to 
-                      no stopping conditions
         
     constraints:      constraint functions in form [g1,g2,...,gm]
                       all have form g(x) <= 0 and return g(x)
@@ -78,7 +75,6 @@ class CUATRO():
         self,
         x0: np.ndarray,
         init_radius: int = 1,
-        max_iter: int = 100,
         tolerance: int = 1e-08,
         beta_inc: int = 1.2,
         beta_red: int = 0.8,
@@ -103,7 +99,6 @@ class CUATRO():
         
         self.x0 = x0
         self.init_radius = init_radius
-        self.max_iter = max_iter
         self.tolerance = tolerance
         self.beta_inc = beta_inc
         self.beta_red = beta_red

@@ -83,7 +83,7 @@ class CUATRO_TIP(CUATRO):
         N = n_T
         T = 1
         
-        while ((len(f_eval_list) - len(prior_evals['f_eval_list'])) < max_f_eval - n_T) and (N <= self.max_iter):
+        while ((len(f_eval_list) - len(prior_evals['f_eval_list'])) < max_f_eval - n_T):
             
             nbr_active = np.sum(trajectories_active)
             
@@ -218,9 +218,7 @@ class CUATRO_TIP(CUATRO):
         # nbr_samples_list += [len(f_eval_list)]
     
         status = ""
-        if N > self.max_iter:
-            status = "Max # of iterations reached"
-        elif N_evals > max_f_eval:
+        if N_evals > max_f_eval:
             status = "Max # of function evaluations"
         print("\nAlgorithm terminated: {}".format(status))
         

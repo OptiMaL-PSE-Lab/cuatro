@@ -204,7 +204,7 @@ class CUATRO_TIS(CUATRO):
         restart = False
 
         
-        while ((len(f_eval_list) - len(prior_evals['f_eval_list'])) < max_f_eval - 1) and (N <= self.max_iter) and (radius > self.tolerance):
+        while ((len(f_eval_list) - len(prior_evals['f_eval_list'])) < max_f_eval - 1) and (radius > self.tolerance):
             
             rnd += 1
             np.random.seed(rnd)
@@ -387,9 +387,7 @@ class CUATRO_TIS(CUATRO):
         nbr_samples_list += [len(f_eval_list)]
     
         status = ""
-        if N > self.max_iter:
-            status = "Max # of iterations reached"
-        elif radius < self.tolerance:
+        if radius < self.tolerance:
             status = "Radius below threshold"
         else:
             status = "Max # of function evaluations"
