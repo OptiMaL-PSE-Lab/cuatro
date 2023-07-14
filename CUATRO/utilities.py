@@ -156,6 +156,63 @@ def quadratic_min(P_, q_, r_, center, radius, bounds, solver_to_use, ineq = None
         print('r_', r_)
         print('Ineq', ineq)
         raise ValueError
+    
+def quadratic_min_pls(P_, q_, r_, center, center_pls, radius, bounds, solver_to_use, pls, ineq = None):
+    X = cp.Variable((len(center_pls), 1))
+    # P = cp.Parameter(P_.shape, value = P_, PSD = True)
+    try:
+        P = cp.Parameter(P_.shape, value = P_, PSD = True)
+    except:
+        P_ = make_PSD(P_)
+        if (P_ == 0).all():
+            P_ = np.eye(len(P_))*1e-8
+            P = cp.Parameter(P_.shape, value = P_, PSD = True)
+        try:
+            P = cp.Parameter(P_.shape, value = P_, PSD = True)
+        except:
+            P_ = np.eye(len(P))*1e-8
+            P = cp.Parameter(P_.shape, value = P_, PSD = True)
+    q = cp.Parameter(q_.shape, value = q_)
+    r = cp.Parameter(r_.shape, value = r_)
+    objective = cp.Minimize(cp.quad_form(X, P) + q.T @ X + r)
+    trust_center = np.array(center).reshape((len(center), 1))
+    constraints = []
+    if ineq != None:
+        raise NotImplementedError('Constraints not yet implemented in CUATRO_PLS. Use soft penalizations and set constraints to []')
+        for coeff in ineq:
+            P_ineq, q_ineq, r_ineq = coeff
+            if not ((P_ineq is None) or (q_ineq is None) or (r_ineq is None)):
+                P_iq = cp.Parameter(P_ineq.shape, value = P_ineq, PSD = True)
+                q_iq = cp.Parameter(q_ineq.shape, value = q_ineq)
+                r_iq = cp.Parameter(r_ineq.shape, value = r_ineq)
+                constraints += [cp.norm(X - trust_center) <= radius,
+                           cp.quad_form(X, P_iq) + q_iq.T @ X + r_iq <= 0]
+
+    else: # X_high.T@X_high <= radius^2 where X_high is the reconstruction of X into high_dim space centered around X_c
+        # print(pls.x_loadings_.T, pls._x_std, np.multiply(pls.x_loadings_.T,pls._x_std))
+        # print(((X.T @ np.multiply(pls.x_loadings_.T,pls._x_std)+pls._x_mean.reshape(1,-1))))
+        
+        constraints = [(X.T @ np.multiply(pls.x_loadings_.T,pls._x_std)+pls._x_mean.reshape(1,-1)- trust_center.T)@(X.T @ np.multiply(pls.x_loadings_.T,pls._x_std)+pls._x_mean.reshape(1,-1)- trust_center.T).T <= radius**2]
+
+    ## TODO: fix bounds as well
+    # if bounds is not None: ## TODO: fix bounds as well
+    #     constraints += [bounds[i,0] <=  X[i] for i in range(P_.shape[0])]
+    #     constraints += [X[i] <= bounds[i,1] for i in range(P_.shape[0])]
+    prob = cp.Problem(objective, constraints)
+    if not prob.is_dcp():
+        print("Problem is not disciplined convex. No global certificate")
+    prob.solve(solver=solver_to_use, verbose=False)
+    if prob.status not in ['unbounded', 'infeasible']:
+        return X.value.reshape(P_.shape[0])
+    else:
+        print(prob.status, ' CVX min. call at: ')
+        print('Center', center)
+        print('Radius', radius)
+        print('P_', P_)
+        print('q_', q_)
+        print('r_', r_)
+        print('Ineq', ineq)
+        raise ValueError
         
 def quadratic_min_expl_expl(P_, q_, r_, center, radius, sample_input, bounds, f_center, solver_to_use, \
                   ineq = None):
@@ -246,9 +303,9 @@ def constr_creation(x, g):
         else:
             feas = np.ones(len(np.array(x)))
     elif any(isinstance(item, float) for item in x) or any(isinstance(item, int) for item in x):
-        feas = np.product((np.array(g) <= 0).astype(int))
+        feas = np.prod((np.array(g) <= 0).astype(int))
     else:
-        feas = np.product( (np.array(g) <= 0).astype(int), axis = 1)
+        feas = np.prod( (np.array(g) <= 0).astype(int), axis = 1)
     return feas
 
 def sample_oracle(x, f, ineq = []):
@@ -386,4 +443,8 @@ def assign_solver(solver_name):
         raise ValueError('Incorrect solver specified')
     
     return solver_to_use
+
+def bound_sample(x, bounds):
+    return [float(min(bounds[i,1], max(bounds[i,0], x_))) for i,x_ in enumerate(x)]
+
 

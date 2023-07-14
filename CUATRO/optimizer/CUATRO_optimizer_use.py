@@ -89,6 +89,7 @@ class CUATRO():
         print_status: str = False,
         constr_handling: str = 'Discrimination',
         sampling: str = 'g',
+        dim_red = False,
         explore: Optional[str] = None,
         sampling_trust_ratio: list = [0.1, 0.9],
         min_radius: int = 0.05,
@@ -108,6 +109,8 @@ class CUATRO():
         self.beta_red = beta_red
         self.eta1 = eta1
         self.eta2 = eta2
+
+        self.dim_red = dim_red
         
         self.method = method
         if self.method not in ['local', 'global']:
@@ -177,6 +180,7 @@ class CUATRO():
         bounds: Optional[list] = None,
         max_f_eval: int = 100,
         rnd: int = 1,
+        n_pls: int = None,
         prior_evals: dict = {'X_samples_list' : [], 'f_eval_list': [], 'g_eval_list': [], 'bounds': [], 'x0_method': 'best eval'}
     ):
         
@@ -184,8 +188,11 @@ class CUATRO():
             new_rad = rescale_radius(self.init_radius, bounds)
             self.init_radius = new_rad
 
+        if self.dim_red:
+            from CUATRO.optimizer.implementations.dim_red_heuristics.CUATRO_PLS import CUATRO_PLS
+            output = CUATRO_PLS(self.x0).optimise(sim, constraints, bounds, max_f_eval, rnd, n_pls, prior_evals) 
 
-        if self.sampling == 'g':
+        elif self.sampling == 'g':
             if self.explore != None:
                 raise ValueError("Exploration heuristics were developed to be used with MCD implemented (set 'sampling': 'base' in custom_params dictionary to use heuristics or set 'explore': None in custom_params to sample without MCD)")
             
@@ -236,7 +243,6 @@ class CUATRO():
             
             from CUATRO.optimizer.implementations.global_heuristics.CUATRO_TIP import CUATRO_TIP
             output = CUATRO_TIP(self.x0).optimise(sim, constraints, bounds, max_f_eval, rnd, prior_evals)
-            print('tip works')
 
         
         return output
