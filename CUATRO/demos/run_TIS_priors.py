@@ -78,10 +78,10 @@ sampl = 'base'
 
 # CUATRO instance initialization and optimization #1 - to be used as prior evals in #2
 custom_params={'N_min_samples': N_min_s, 'init_radius': init_radius, 'explore': 'sampling_region', 'sampling': sampl}
-CUATRO_inst_prior = CUATRO(x0=x0, **custom_params)
+CUATRO_inst_prior = CUATRO(**custom_params)
 
 
-results_prior = CUATRO_inst_prior.run_optimiser(sim, bounds = bounds, \
+results_prior = CUATRO_inst_prior.run_optimiser(sim, x0=x0,bounds = bounds, \
                              max_f_eval = max_f_eval)
 
 print("\nDone generating prior evals\n\nOptimising using prior evals...\n")
@@ -102,10 +102,10 @@ g_prior = results_prior['g_store'][:2]
 
 # CUATRO instance initialization and optimization #2 - use prior evals
 custom_params={'N_min_samples': N_min_s, 'init_radius': init_radius, 'explore': 'sampling_region', 'sampling': sampl}
-CUATRO_inst = CUATRO(x0=x0, **custom_params)
+CUATRO_inst = CUATRO(**custom_params)
 
 
-results = CUATRO_inst.run_optimiser(sim, bounds = bounds, max_f_eval = max_f_eval, \
+results = CUATRO_inst.run_optimiser(sim, x0=x0, bounds = bounds, max_f_eval = max_f_eval, \
     prior_evals = {'X_samples_list' : X_prior, 'f_eval_list': f_prior, 'g_eval_list': g_prior,
     'bounds': [], 'x0_method': 'best eval'})
 

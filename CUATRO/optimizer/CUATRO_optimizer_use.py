@@ -14,8 +14,6 @@ class CUATRO():
     ------------------------------------
     f:                function to be optimised
         
-    x0:               initial guess in form [x1,x2,...,xn]
-        
     init_radius:      initial trust region radius
         
     constraints:      constraint functions in form [g1,g2,...,gm]
@@ -73,7 +71,6 @@ class CUATRO():
 
     def __init__(
         self,
-        x0: np.ndarray,
         init_radius: int = 1,
         tolerance: int = 1e-08,
         beta_inc: int = 1.2,
@@ -97,7 +94,6 @@ class CUATRO():
         automatic_params: Optional[dict] = None
     ):
         
-        self.x0 = x0
         self.init_radius = init_radius
         self.tolerance = tolerance
         self.beta_inc = beta_inc
@@ -171,6 +167,7 @@ class CUATRO():
     def run_optimiser(
         self,
         sim,
+        x0: np.ndarray = None, # x0: initial guess in form [x1,x2,...,xn]
         constraints: Optional[list] = None, #might have to change to [] i.e. an empty list
         bounds: Optional[list] = None,
         max_f_eval: int = 100,
@@ -185,19 +182,19 @@ class CUATRO():
 
         if self.dim_red:
             from CUATRO.optimizer.implementations.dim_red_heuristics.CUATRO_PLS import CUATRO_PLS
-            output = CUATRO_PLS(self.x0).optimise(sim, constraints, bounds, max_f_eval, rnd, n_pls, prior_evals) 
+            output = CUATRO_PLS().optimise(sim, x0, constraints, bounds, max_f_eval, rnd, n_pls, prior_evals) 
 
         elif self.sampling == 'g':
             if self.explore != None:
                 raise ValueError("Exploration heuristics were developed to be used with MCD implemented (set 'sampling': 'base' in custom_params dictionary to use heuristics or set 'explore': None in custom_params to sample without MCD)")
             
             from CUATRO.optimizer.implementations.CUATRO_g import CUATRO_g
-            output = CUATRO_g(self.x0).optimise(sim, constraints, bounds, max_f_eval, rnd, prior_evals)
+            output = CUATRO_g().optimise(sim, x0, constraints, bounds, max_f_eval, rnd, prior_evals)
             
         
         elif (self.sampling == 'base') and (self.explore == None):
             from CUATRO.optimizer.implementations.CUATRO_base import CUATRO_base
-            output = CUATRO_base(self.x0).optimise(sim, constraints, bounds, max_f_eval, rnd, prior_evals) 
+            output = CUATRO_base().optimise(sim, x0, constraints, bounds, max_f_eval, rnd, prior_evals) 
                    
         
         elif self.explore == 'feasible_sampling':
@@ -205,7 +202,7 @@ class CUATRO():
                 raise ValueError("Exploration heuristics were developed to be used with MCD implemented (set 'sampling': 'base' in custom_params dictionary to use heuristics or set 'explore': None in custom_params to sample without MCD)")
             
             from CUATRO.optimizer.implementations.local_heuristics.CUATRO_feasible_sampling import CUATRO_feas_samp
-            output = CUATRO_feas_samp(self.x0).optimise(sim, constraints, bounds, max_f_eval, rnd, prior_evals)
+            output = CUATRO_feas_samp().optimise(sim, x0, constraints, bounds, max_f_eval, rnd, prior_evals)
             
         
         elif self.explore == 'exploit_explore':
@@ -213,7 +210,7 @@ class CUATRO():
                 raise ValueError("Exploration heuristics were developed to be used with MCD implemented (set 'sampling': 'base' in custom_params dictionary to use heuristics or set 'explore': None in custom_params to sample without MCD)")
             
             from CUATRO.optimizer.implementations.local_heuristics.CUATRO_exploit_explore import CUATRO_expl_expl
-            output = CUATRO_expl_expl(self.x0).optimise(sim, constraints, bounds, max_f_eval, rnd, prior_evals)
+            output = CUATRO_expl_expl().optimise(sim, x0, constraints, bounds, max_f_eval, rnd, prior_evals)
         
         
         elif self.explore == 'sampling_region':
@@ -221,7 +218,7 @@ class CUATRO():
                 raise ValueError("Exploration heuristics were developed to be used with MCD implemented (set 'sampling': 'base' in custom_params dictionary to use heuristics or set 'explore': None in custom_params to sample without MCD)")
             
             from CUATRO.optimizer.implementations.local_heuristics.CUATRO_sampling_region import CUATRO_sampling_region
-            output = CUATRO_sampling_region(self.x0).optimise(sim, constraints, bounds, max_f_eval, rnd, prior_evals)
+            output = CUATRO_sampling_region().optimise(sim, x0, constraints, bounds, max_f_eval, rnd, prior_evals)
         
         
         elif self.explore == 'TIS':
@@ -229,7 +226,7 @@ class CUATRO():
                 raise ValueError("Exploration heuristics were developed to be used with MCD implemented (set 'sampling': 'base' in custom_params dictionary to use heuristics or set 'explore': None in custom_params to sample without MCD)")
             
             from CUATRO.optimizer.implementations.global_heuristics.CUATRO_TIS import CUATRO_TIS
-            output = CUATRO_TIS(self.x0).optimise(sim, constraints, bounds, max_f_eval, rnd, prior_evals)
+            output = CUATRO_TIS().optimise(sim, x0, constraints, bounds, max_f_eval, rnd, prior_evals)
         
 
         elif self.explore == 'TIP':
@@ -237,7 +234,7 @@ class CUATRO():
                 raise ValueError("Exploration heuristics were developed to be used with MCD implemented (set 'sampling': 'base' in custom_params dictionary to use heuristics or set 'explore': None in custom_params to sample without MCD)")
             
             from CUATRO.optimizer.implementations.global_heuristics.CUATRO_TIP import CUATRO_TIP
-            output = CUATRO_TIP(self.x0).optimise(sim, constraints, bounds, max_f_eval, rnd, prior_evals)
+            output = CUATRO_TIP().optimise(sim, x0, constraints, bounds, max_f_eval, rnd, prior_evals)
 
         
         return output

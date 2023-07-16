@@ -75,20 +75,20 @@ sampl = 'base'
 
 
 # # CUATRO instance initialization and optimization
-# CUATRO_inst = CUATRO(x0=x0, custom_params={'N_min_samples': N_min_s, 'init_radius': init_radius,
+# CUATRO_inst = CUATRO(custom_params={'N_min_samples': N_min_s, 'init_radius': init_radius,
 # 'explore': 'TIS', 'sampling': sampl, 'min_radius': min_radius, 'min_restart_radius': min_restart_radius,
 #     'conv_radius': conv_radius})
 
 
-# results = CUATRO_inst.optimise(sim, bounds = bounds, \
+# results = CUATRO_inst.optimise(sim, x0=x0, bounds = bounds, \
 #                              max_f_eval = max_f_eval)
 
 # CUATRO instance initialization and optimization
-CUATRO_inst = CUATRO(x0=x0, N_min_samples=N_min_s, \
+CUATRO_inst = CUATRO(N_min_samples=N_min_s, \
      init_radius=init_radius, explore='TIS', sampling=sampl, solver_to_use='SCS', min_radius=min_radius, \
          min_restart_radius=min_restart_radius, conv_radius=conv_radius)
 
-results = CUATRO_inst.run_optimiser(sim=sim, bounds=bounds, max_f_eval=max_f_eval)
+results = CUATRO_inst.run_optimiser(sim=sim, x0=x0, bounds=bounds, max_f_eval=max_f_eval)
 
 
 print('\n')

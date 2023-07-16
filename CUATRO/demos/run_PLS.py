@@ -41,15 +41,15 @@ for dim in dims:
     bounds = np.array([(-5,5) for _ in range(dim)])
     x0 = np.array([0 for _ in range(dim)])
 
-    CUATRO_PLS = CUATRO(x0=x0, sampling='g', explore=None, method='local', N_min_samples=N_min_PLS, beta_red=beta, tolerance=tol, init_radius=init_radius, dim_red=True)
-    CUATRO_bench = CUATRO(x0=x0, sampling='g', explore=None, method='local', N_min_samples=N_min_g, beta_red=beta, tolerance=tol, init_radius=init_radius)
+    CUATRO_PLS = CUATRO(sampling='g', explore=None, method='local', N_min_samples=N_min_PLS, beta_red=beta, tolerance=tol, init_radius=init_radius, dim_red=True)
+    CUATRO_bench = CUATRO(sampling='g', explore=None, method='local', N_min_samples=N_min_g, beta_red=beta, tolerance=tol, init_radius=init_radius)
 
     t0 = perf_counter()
-    res_PLS = CUATRO_PLS.run_optimiser(sim=obj, bounds=bounds, max_f_eval=budget, rnd=0, n_pls=n_e)
+    res_PLS = CUATRO_PLS.run_optimiser(sim=obj, x0=x0, bounds=bounds, max_f_eval=budget, rnd=0, n_pls=n_e)
     t1=perf_counter()
 
     if dim < 300:
-        res_g = CUATRO_bench.run_optimiser(sim=obj, bounds=bounds, max_f_eval=budget, rnd=0)
+        res_g = CUATRO_bench.run_optimiser(sim=obj, x0=x0, bounds=bounds, max_f_eval=budget, rnd=0)
         t2=perf_counter()
 
         perf_res['base'] += [res_g['f_best_so_far'][-1]]

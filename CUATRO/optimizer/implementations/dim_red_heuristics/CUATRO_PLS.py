@@ -24,12 +24,13 @@ from typing import Optional
 warnings.filterwarnings('ignore')
 
 class CUATRO_PLS(CUATRO):
-    def __init__(self, x0):
-        super().__init__(x0)
-    
+    def __init__(self):
+        super().__init__()
+        
     def optimise(
         self,
         sim,
+        x0: np.ndarray = None,
         constraints: Optional[list] = None, # 
         bounds: Optional[list] = None,
         max_f_eval: int = 100,
@@ -48,7 +49,7 @@ class CUATRO_PLS(CUATRO):
         if n_pls is None: # if no knowledge about n_e is given, use heuristics to determine effective dim.
             n_pls = int(max_f_eval / 10)
 
-        if (len(prior_evals['X_samples_list']) == 0) and (not (isinstance(self.x0, np.ndarray))):
+        if (len(prior_evals['X_samples_list']) == 0) and (not (isinstance(x0, np.ndarray))):
             raise ValueError("You've specified neither prior function evaluations nor a valid x0 array")
 
         if (len(prior_evals['X_samples_list']) != len(prior_evals['f_eval_list'])) or (len(prior_evals['X_samples_list']) != len(prior_evals['g_eval_list'])):
@@ -69,7 +70,7 @@ class CUATRO_PLS(CUATRO):
         
         np.random.seed(rnd)
         if len(X_samples_list) == 0:
-            center_ = list(self.x0)
+            center_ = list(x0)
             no_of_prior_feas_x = 0
             no_of_prior_infeas_x = 0
 

@@ -17,12 +17,13 @@ from typing import Optional
 
 class CUATRO_TIP(CUATRO):
     
-    def __init__(self, x0):
-        super().__init__(x0)
+    def __init__(self):
+        super().__init__()
         
     def optimise(
         self,
         sim,
+        x0: np.ndarray = None,
         constraints: Optional[list] = None, #might change to [] i.e. a empty list
         bounds: Optional[list] = None,
         max_f_eval: int = 100,
@@ -30,7 +31,7 @@ class CUATRO_TIP(CUATRO):
         prior_evals: dict = {'X_samples_list' : [], 'f_eval_list': [], 'g_eval_list': [], 'bounds': [], 'x0_method': 'best eval'}
     ):
         
-        if (len(prior_evals['X_samples_list']) == 0) and (not (isinstance(self.x0, np.ndarray))):
+        if (len(prior_evals['X_samples_list']) == 0) and (not (isinstance(x0, np.ndarray))):
             raise ValueError("You've specified neither prior function evaluations nor a valid x0 array")
         
         if (len(prior_evals['X_samples_list']) != len(prior_evals['f_eval_list'])) or (len(prior_evals['X_samples_list']) != len(prior_evals['g_eval_list'])):
@@ -53,16 +54,16 @@ class CUATRO_TIP(CUATRO):
         # initialise x0 such that it contains the specified number of best prior candidates
         if len(X_samples_list) != 0:
             best_indices = np.argsort(np.array(f_eval_list.copy()))[:self.no_x0]
-            self.x0 = np.array([X_samples_list.copy()[i] for i in best_indices])
+            x0 = np.array([X_samples_list.copy()[i] for i in best_indices])
         
-        n_T = len(self.x0)
+        n_T = len(x0)
         trajectories_active = np.ones(n_T)
-        self.x0, radii = generate_init_radii(self.x0, self.init_radius)
+        x0, radii = generate_init_radii(x0, self.init_radius)
         radii = np.array(radii).reshape((n_T,1)).tolist()
-        steps = np.array(self.x0).reshape((n_T,1,-1)).tolist()
-        f_steps, g_steps, feas_steps = sample_simulation(self.x0, sim)  
+        steps = np.array(x0).reshape((n_T,1,-1)).tolist()
+        f_steps, g_steps, feas_steps = sample_simulation(x0, sim)  
         
-        X_samples_list += self.x0
+        X_samples_list += x0
         f_eval_list += f_steps
         g_eval_list += g_steps
     
@@ -78,7 +79,7 @@ class CUATRO_TIP(CUATRO):
         if (np.array(feas_steps) == 0).any():
             raise ValueError("Please make sure all points are feasible\n\
                             The following points are not:\n\
-                            {}".format(np.array(self.x0)[(np.array(feas_steps) == 0).reshape(n_T)]))
+                            {}".format(np.array(x0)[(np.array(feas_steps) == 0).reshape(n_T)]))
         
         N = n_T
         T = 1

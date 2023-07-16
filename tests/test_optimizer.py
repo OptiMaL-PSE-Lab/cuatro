@@ -26,7 +26,7 @@ class TestCustomParams(unittest.TestCase):
         """
         
         # the non-default values
-        setValues = {'x0': np.array([-1.5,-1.5]),
+        setValues = {
                      'init_radius': 0.5,
                      'tolerance': 1e-09,
                      'beta_inc': 1.25,
@@ -49,7 +49,7 @@ class TestCustomParams(unittest.TestCase):
                      }
         
         
-        solver_instance = CUATRO(x0 = np.array([-1.5,-1.5]),
+        solver_instance = CUATRO(
                                  init_radius = 0.5,
                                  tolerance = 1e-09,
                                  beta_inc = 1.25,
@@ -74,10 +74,9 @@ class TestCustomParams(unittest.TestCase):
         vars_to_check = solver_instance.__dict__
         
         for var, var_value in vars_to_check.items():                
-            if var not in ['x0', 'automatic_params', 'dim_red']: # TODO: implement testing for automatic_params, dim_red
+            if var not in ['automatic_params', 'dim_red']: # TODO: implement testing for automatic_params, dim_red
                self.assertTrue((var_value == setValues[var]), f"{var} parameter was not set correctly, and has value {var_value} instead of {setValues[var]}")
-            self.assertTrue(np.array_equal(vars_to_check['x0'], setValues['x0']), f"x0 was not set correctly and has value {vars_to_check['x0']} instead of {setValues['x0']}")
-         
+            
 
 class TestImplementations(unittest.TestCase):
     def runTest(self):
@@ -92,7 +91,7 @@ class TestImplementations(unittest.TestCase):
 
         for sampl in sampling_types:
             for expl in exploration_heuristics:
-                solver_instance = CUATRO(x0=x0, sampling=sampl, explore=expl)
+                solver_instance = CUATRO(sampling=sampl, explore=expl)
 
                 if solver_instance.sampling == 'g':
                     try:
@@ -119,8 +118,8 @@ class TestTolerance(unittest.TestCase):
         tol = 1e-03
         max_eval = 1000
 
-        solver_instance = CUATRO(x0=x0, tolerance=tol)
-        results = solver_instance.run_optimiser(sim, max_f_eval=max_eval)
+        solver_instance = CUATRO(tolerance=tol)
+        results = solver_instance.run_optimiser(sim, x0=x0, max_f_eval=max_eval)
 
         self.assertTrue((results['N_eval'] < max_eval), "number of function evaluations is over the max allowed")
         self.assertTrue((results['TR'][-1] < tol), "radius was not smaller than tolerance")
@@ -137,8 +136,8 @@ class TestBudget(unittest.TestCase):
         max_eval = 100
         
         # set N_min_samples to max_f_eval - 2 to force edge case where N_eval can't reach max_f_eval (need to have enough samples in trust region as well to work)
-        solver_instance = CUATRO(x0=x0, tolerance=tol, N_min_samples=15)
-        results = solver_instance.run_optimiser(sim, max_f_eval=max_eval)
+        solver_instance = CUATRO(tolerance=tol, N_min_samples=15)
+        results = solver_instance.run_optimiser(sim, x0=x0, max_f_eval=max_eval)
 
         self.assertTrue(((results['N_eval'] == max_eval) or (results['N_eval'] == max_eval-1)), f"number of function evaluations was not equal to max allowed, it was {results['N_eval']}")
         self.assertTrue((results['TR'][-1] > tol), "radius was not bigger than tolerance")
@@ -155,8 +154,8 @@ class TestIterations(unittest.TestCase):
         tol = 1e-10
         max_eval = 10000
 
-        solver_instance = CUATRO(x0=x0, tolerance=tol)
-        results = solver_instance.run_optimiser(sim, max_f_eval=max_eval)
+        solver_instance = CUATRO(tolerance=tol)
+        results = solver_instance.run_optimiser(sim, x0=x0, max_f_eval=max_eval)
 
         self.assertTrue((results['N_eval'] < max_eval), "number of function evaluations was not smaller than max allowed")
         self.assertTrue((results['TR'][-1] > tol), "radius was not bigger than tolerance")

@@ -63,12 +63,13 @@ class CUATRO_feas_samp(CUATRO):
     
     # oracle = oracle_sample(f, ineq = constraints)
     
-    def __init__(self, x0):
-        super().__init__(x0)
+    def __init__(self):
+        super().__init__()
         
     def optimise(
         self,
         sim,
+        x0: np.ndarray = None,
         constraints: Optional[list] = None, #might change to [] i.e. a empty list
         bounds: Optional[list] = None,
         max_f_eval: int = 100,
@@ -76,7 +77,7 @@ class CUATRO_feas_samp(CUATRO):
         prior_evals: dict = {'X_samples_list' : [], 'f_eval_list': [], 'g_eval_list': [], 'bounds': [], 'x0_method': 'best eval'}
     ):
         
-        if (len(prior_evals['X_samples_list']) == 0) and (not (isinstance(self.x0, np.ndarray))):
+        if (len(prior_evals['X_samples_list']) == 0) and (not (isinstance(x0, np.ndarray))):
             raise ValueError("You've specified neither prior function evaluations nor a valid x0 array")
         
         if (len(prior_evals['X_samples_list']) != len(prior_evals['f_eval_list'])) or (len(prior_evals['X_samples_list']) != len(prior_evals['g_eval_list'])):
@@ -98,7 +99,7 @@ class CUATRO_feas_samp(CUATRO):
         np.random.seed(rnd)
         
         if len(X_samples_list) == 0:
-            center_ = list(self.x0)
+            center_ = list(x0)
             no_of_prior_feas_x = 0
             no_of_prior_infeas_x = 0
 
@@ -192,7 +193,7 @@ class CUATRO_feas_samp(CUATRO):
         else:
             print('P is None in first iteration')
             # logger.warn("P is None in first iteration")
-            center_ = list(self.x0)
+            center_ = list(x0)
         
         center = [float(c) for c in center_]
         

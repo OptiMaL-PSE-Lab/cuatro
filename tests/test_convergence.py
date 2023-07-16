@@ -34,14 +34,14 @@ tol= 1e-10
 
 
 solvers = {
-    'CUATRO_g': CUATRO(x0=x0, sampling='g', explore=None, method='global', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
-    'CUATRO_l': CUATRO(x0=x0, sampling='g', explore=None, method='local', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
-    'CUATRO_base': CUATRO(x0=x0, sampling='base', explore=None, N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
+    'CUATRO_g': CUATRO(sampling='g', explore=None, method='global', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
+    'CUATRO_l': CUATRO(sampling='g', explore=None, method='local', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
+    'CUATRO_base': CUATRO(sampling='base', explore=None, N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
     #'CUATRO_expl_expl': CUATRO_expl_expl, # TODO: expl expl might not be great
-    'CUATRO_feas_samp': CUATRO(x0=x0, sampling='base', explore='feasible_sampling', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
-    'CUATRO_sampl_region': CUATRO(x0=x0, sampling='base', explore='sampling_region', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
-    'CUATRO_TIS': CUATRO(x0=x0, sampling='base', explore='TIS', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
-    'CUATRO_TIP': CUATRO(x0=x0_multiple, sampling='base', explore='TIP', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius)
+    'CUATRO_feas_samp': CUATRO(sampling='base', explore='feasible_sampling', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
+    'CUATRO_sampl_region': CUATRO(sampling='base', explore='sampling_region', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
+    'CUATRO_TIS': CUATRO(sampling='base', explore='TIS', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius),
+    'CUATRO_TIP': CUATRO(sampling='base', explore='TIP', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius)
 }
 
 
@@ -50,7 +50,7 @@ class TestConvergence_g(unittest.TestCase):
         """
         see whether convergence is achieved for the given test function
         """  
-        res = solvers['CUATRO_g'].run_optimiser(sim=sim, bounds=bounds, max_f_eval=N, rnd=0)
+        res = solvers['CUATRO_g'].run_optimiser(sim=sim, x0=x0, bounds=bounds, max_f_eval=N, rnd=0)
         self.assertTrue((abs(res['f_best_so_far'][-1] - optimum)**2 < conv_rad), f"CUATRO_g did not converge to {conv_rad} accuracy for a budget of {N}; best_f: {res['f_best_so_far'][-1]}, optimum: {optimum}")
 
 
@@ -59,7 +59,7 @@ class TestConvergence_base(unittest.TestCase):
         """
         see whether convergence is achieved for the given test function
         """  
-        res = solvers['CUATRO_base'].run_optimiser(sim=sim, bounds=bounds, max_f_eval=N, rnd=0)
+        res = solvers['CUATRO_base'].run_optimiser(sim=sim, x0=x0, bounds=bounds, max_f_eval=N, rnd=0)
         self.assertTrue((abs(res['f_best_so_far'][-1] - optimum)**2 < conv_rad), f"CUATRO_base did not converge to {conv_rad} accuracy for a budget of {N}; best_f: {res['f_best_so_far'][-1]}, optimum: {optimum}")
 
 
@@ -68,7 +68,7 @@ class TestConvergence_feas_samp(unittest.TestCase):
         """
         see whether convergence is achieved for the given test function
         """  
-        res = solvers['CUATRO_feas_samp'].run_optimiser(sim=sim, bounds=bounds, max_f_eval=N, rnd=0)
+        res = solvers['CUATRO_feas_samp'].run_optimiser(sim=sim, x0=x0, bounds=bounds, max_f_eval=N, rnd=0)
         self.assertTrue((abs(res['f_best_so_far'][-1] - optimum)**2 < conv_rad), f"CUATRO_feas_samp did not converge to {conv_rad} accuracy for a budget of {N}; best_f: {res['f_best_so_far'][-1]}, optimum: {optimum}")
 
 
@@ -77,7 +77,7 @@ class TestConvergence_sampl_region(unittest.TestCase):
         """
         see whether convergence is achieved for the given test function
         """  
-        res = solvers['CUATRO_sampl_region'].run_optimiser(sim=sim, bounds=bounds, max_f_eval=N, rnd=0)
+        res = solvers['CUATRO_sampl_region'].run_optimiser(sim=sim, x0=x0, bounds=bounds, max_f_eval=N, rnd=0)
         self.assertTrue((abs(res['f_best_so_far'][-1] - optimum)**2 < conv_rad), f"CUATRO_sampl_region did not converge to {conv_rad} accuracy for a budget of {N}; best_f: {res['f_best_so_far'][-1]}, optimum: {optimum}")
 
 
@@ -86,7 +86,7 @@ class TestConvergence_TIS(unittest.TestCase):
         """
         see whether convergence is achieved for the given test function
         """  
-        res = solvers['CUATRO_TIS'].run_optimiser(sim=sim, bounds=bounds, max_f_eval=N, rnd=0)
+        res = solvers['CUATRO_TIS'].run_optimiser(sim=sim, x0=x0, bounds=bounds, max_f_eval=N, rnd=0)
         self.assertTrue((abs(res['f_best_so_far'][-1] - optimum)**2 < conv_rad), f"CUATRO_TIS did not converge to {conv_rad} accuracy for a budget of {N}; best_f: {res['f_best_so_far'][-1]}, optimum: {optimum}")
 
 
@@ -95,10 +95,10 @@ class TestConvergence_TIP(unittest.TestCase):
         """
         see whether convergence is achieved for the given test function
         """  
-        res = solvers['CUATRO_TIP'].run_optimiser(sim=sim, bounds=bounds, max_f_eval=N, rnd=0)
+        res = solvers['CUATRO_TIP'].run_optimiser(sim=sim, x0=x0_multiple, bounds=bounds, max_f_eval=N, rnd=0)
         self.assertTrue((abs(res['f_best_so_far'][-1] - optimum)**2 < conv_rad), f"CUATRO_TIP did not converge to {conv_rad} accuracy for a budget of {N}; best_f: {res['f_best_so_far'][-1]}, optimum: {optimum}")
 
-        
+
 if __name__ == '__main__':
     unittest.main()
 
