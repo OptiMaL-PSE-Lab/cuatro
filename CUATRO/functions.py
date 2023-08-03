@@ -66,19 +66,19 @@ def outside_bounds(x, bounds):
     return -inside_bounds(x,bounds)
 
 # Returns the given bounds centered around a point
-def bounds_centered_on(center, bounds = None, diameter = None):
-    centered_bounds = np.empty((len(center),2))
-    if bounds:
-        for i in range(len(center)):
-            bound_range = max(bounds[i]) - min(bounds[i])
-            centered_bounds[i] = np.array([-bound_range/2, bound_range/2]) + center[i]
-        return centered_bounds
-    elif diameter:
-        for i in range(len(center)):
-            centered_bounds[i] = np.array([-diameter/2, diameter/2]) + center[i]
-        return centered_bounds
-    else:
-        raise ValueError("Must specify either bounds or radius")
+# def bounds_centered_on(center, bounds = None, diameter = None):
+#     centered_bounds = np.empty((len(center),2))
+#     if bounds:
+#         for i in range(len(center)):
+#             bound_range = max(bounds[i]) - min(bounds[i])
+#             centered_bounds[i] = np.array([-bound_range/2, bound_range/2]) + center[i]
+#         return centered_bounds
+#     elif diameter:
+#         for i in range(len(center)):
+#             centered_bounds[i] = np.array([-diameter/2, diameter/2]) + center[i]
+#         return centered_bounds
+#     else:
+#         raise ValueError("Must specify either bounds or radius")
 
 # Returns center of a given set of bounds
 def center_of_bounds(bounds):
@@ -103,10 +103,10 @@ def shuffle(N):
     deck.remove(deck[card_number]) # removes the card from the deck
   return shuffled
 
-def random_radial_sample(center, radius):
-    arg = 2*math.pi*random.random()
-    mod = math.sqrt(radius**2*random.random())
-    return np.array([mod*math.cos(arg), mod*math.sin(arg)]) + center
+# def random_radial_sample(center, radius):
+#     arg = 2*math.pi*random.random()
+#     mod = math.sqrt(radius**2*random.random())
+#     return np.array([mod*math.cos(arg), mod*math.sin(arg)]) + center
 
 def random_bounded_sample(bounds):
     s = np.empty(len(bounds))

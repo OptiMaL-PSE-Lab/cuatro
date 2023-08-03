@@ -4,6 +4,7 @@ from scipy.stats import ortho_group
 class RB:
     def __init__(self, n_high, seed = 0):
         np.random.seed(seed)
+        self.dim = n_high
         self.Q = ortho_group.rvs(n_high)
         
     def rosenbrock_(self, x):

@@ -45,6 +45,7 @@ def samples_in_trust(center, radius, \
     g = np.array(g_list)
     ind = np.where(np.linalg.norm(X - np.array(center), axis = 1,\
                                   keepdims = True) < radius)[0]
+    # ind = np.where([np.sum([(X_in[j,i]-x_c[i])**2*4/(bounds[i,1]-bounds[i,0])**2/(radius)**2 for i in range(len(x_c))]) <= 1 for j in range(len(X_in))])[0]
     X_in_trust = X[ind] ; y_in_trust = y[ind] ; g_in_trust = g[ind]
     feas_in_trust = constr_creation(X_in_trust, g_in_trust.tolist())
     
