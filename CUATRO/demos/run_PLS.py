@@ -25,11 +25,13 @@ fig, (ax1, ax2) = plt.subplots(1, 2)
 perf_res = {
     'base': [],
     'PLS': [],
+    'PLS_expl': [],
 }
 
 time_res = {
     'base': [],
     'PLS': [],
+    'PLS_expl': [],
 }
 
 for dim in dims:
@@ -42,11 +44,22 @@ for dim in dims:
     x0 = np.array([0 for _ in range(dim)])
 
     CUATRO_PLS = CUATRO(sampling='g', explore=None, method='local', N_min_samples=N_min_PLS, beta_red=beta, tolerance=tol, init_radius=init_radius, dim_red=True)
+    CUATRO_PLS_expl = CUATRO(sampling='base', explore=None, method='local', N_min_samples=N_min_PLS, beta_red=beta, tolerance=tol, init_radius=init_radius, dim_red=True)
     CUATRO_bench = CUATRO(sampling='g', explore=None, method='local', N_min_samples=N_min_g, beta_red=beta, tolerance=tol, init_radius=init_radius)
 
     t0 = perf_counter()
     res_PLS = CUATRO_PLS.run_optimiser(sim=obj, x0=x0, bounds=bounds, max_f_eval=budget, rnd=0, n_pls=n_e)
     t1=perf_counter()
+
+    perf_res['PLS'] += [res_PLS['f_best_so_far'][-1]]
+    time_res['PLS'] += [t1-t0]
+
+    t0 = perf_counter()
+    res_PLS_expl = CUATRO_PLS_expl.run_optimiser(sim=obj, x0=x0, bounds=bounds, max_f_eval=budget, rnd=0, n_pls=n_e)
+    t1 = perf_counter()
+
+    perf_res['PLS_expl'] += [res_PLS_expl['f_best_so_far'][-1]]
+    time_res['PLS_expl'] += [t1-t0]
 
     if dim < 300:
         res_g = CUATRO_bench.run_optimiser(sim=obj, x0=x0, bounds=bounds, max_f_eval=budget, rnd=0)
@@ -55,13 +68,11 @@ for dim in dims:
         perf_res['base'] += [res_g['f_best_so_far'][-1]]
         time_res['base'] += [t2-t1]
 
-    perf_res['PLS'] += [res_PLS['f_best_so_far'][-1]]
-    time_res['PLS'] += [t1-t0]
-
     print(f'Done with dim {dim}')
 
 ax1.plot(dims[:len(perf_res['base'])], perf_res['base'], label='base', c='blue')
 ax1.plot(dims, perf_res['PLS'], c='orange', label='PLS')
+ax1.plot(dims, perf_res['PLS_expl'], label='PLS_expl', c='green')
 ax1.legend()
 ax1.set_xscale('log')
 ax1.set_xlabel('Original dimensionality')
@@ -69,6 +80,7 @@ ax1.set_ylabel('Best objective found (optimum: 0)')
 
 ax2.plot(dims[:len(time_res['base'])], time_res['base'], c='blue')
 ax2.plot(dims, time_res['PLS'], c='orange')
+ax2.plot(dims, time_res['PLS_expl'], label='PLS_expl', c='green')
 ax2.set_xscale('log')
 ax2.set_yscale('log')
 ax2.set_xlabel('Original dimensionality')

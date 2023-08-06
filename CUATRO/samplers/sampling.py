@@ -23,18 +23,57 @@ def sample_LHS(sim, bounds, N, rnd_seed = 1):
     
     return data_points, func_eval, g_eval, feas
 
-a = 0.1
-def sample_points_opt(center, radius, f, samples, bounds, N = 10): ## TODO: Check that this does not give too many points
+
+def sample_points_expl(center, f, samples, bounds, a = 0.1, N = 10): 
     # used for:
     # base, sampling_region, exploit_explore
     new_samples = np.array([center])
     
     while len(new_samples) < N + 1:
             
-        def closest_distance_edge(x):  
-            nearest_distance_to_sample = min([np.linalg.norm(x-s) for s in samples])
-            distance_to_edge = radius - np.linalg.norm(x-center)
-            nearest_distance = min(nearest_distance_to_sample, distance_to_edge/a)
+        def closest_distance_edge(x, a=a):  
+            nearest_distance_to_sample = min([np.linalg.norm(x-np.array(s)) for s in samples])
+            bounds_dist = min([min(x[i] - bounds[i,0] , bounds[i,1] - x[i]) \
+                        for i in range(len(center))])
+            nearest_distance = min(nearest_distance_to_sample, bounds_dist/a)
+            return -nearest_distance
+        
+        initial_points = LHS(bounds, min(2000, 100*len(bounds))).T
+        # print(initial_points[:4])
+        closest_distances = [closest_distance_edge(p) for p in initial_points]
+        ind_best_distance = np.argmin(closest_distances)
+        s_0 = initial_points[ind_best_distance]
+        # print(closest_distances[ind_best_distance], s_0)
+                
+        # s_i = minimize(closest_distance_edge, s_0, bounds=bounds, method='Powell', options={'maxfev': 2000}).x
+        # s_i = minimize(closest_distance_edge, s_0, bounds=bounds, method='Nelder-Mead', options={'maxfev': 2000}).x
+
+        s_i = s_0
+
+        new_samples = np.vstack((new_samples,s_i))
+        samples = np.vstack((samples,s_i))
+        # print(closest_distance_edge(s_i))
+    
+    new_samples = new_samples[1:] # Removing the center from samples
+    func_eval, g_eval, feas = sample_simulation(new_samples.tolist(), f)
+    
+    return new_samples, func_eval, g_eval, feas
+
+
+def sample_points_opt(center, radius, f, samples, bounds, a = 0.1, N = 10): 
+    # used for:
+    # base, sampling_region, exploit_explore
+    new_samples = np.array([center])
+    
+    while len(new_samples) < N + 1:
+            
+        def closest_distance_edge(x, a=a):  
+            nearest_distance_to_sample = min([np.linalg.norm(x-np.array(s)) for s in samples])
+            distance_to_edge = radius - np.linalg.norm(x-np.array(center))
+            bounds_dist = min([min(x[i] - bounds[i,0] , bounds[i,1] - x[i]) \
+                        for i in range(len(center))])
+            # nearest_distance = min(nearest_distance_to_sample, distance_to_edge/a, bounds_dist/a)
+            nearest_distance = nearest_distance_to_sample
             return -nearest_distance
         def bounds_const(x): 
             return min([min(x[i] - bounds[i,0] , bounds[i,1] - x[i]) \
@@ -59,13 +98,13 @@ def sample_points_opt(center, radius, f, samples, bounds, N = 10): ## TODO: Chec
     
     return new_samples, func_eval, g_eval, feas
 
-def sample_points_feas_samp(center, radius, f, samples, bounds, ineq_coeff, N = 10):
+def sample_points_feas_samp(center, radius, f, samples, bounds, ineq_coeff, a=0.1, N = 10):
     
     new_samples = np.array([center])
     
     while len(new_samples) < N + 1:
         
-        def closest_distance_edge(x):  
+        def closest_distance_edge(x, a=a):  
             nearest_distance_to_sample = min([np.linalg.norm(x-s) for s in samples])
             distance_to_edge = radius - np.linalg.norm(x-center)
             nearest_distance = min(nearest_distance_to_sample, distance_to_edge/a)
@@ -106,7 +145,7 @@ def sample_points_feas_samp(center, radius, f, samples, bounds, ineq_coeff, N = 
     
     return new_samples, func_eval, g_eval, feas
 
-def sample_points_TIS(center, radius, f, samples, bounds, ineq_coeff, N = 10, \
+def sample_points_TIS(center, radius, f, samples, bounds, ineq_coeff, a=0.1, N = 10, \
                       ineq = False):
     
     new_samples = np.array([center])
@@ -116,7 +155,7 @@ def sample_points_TIS(center, radius, f, samples, bounds, ineq_coeff, N = 10, \
         # until the length is N+1 and then remove the centre
         while len(new_samples) < N + 1:
             
-            def closest_distance_edge(x):  
+            def closest_distance_edge(x, a=a):  
                 nearest_distance_to_sample = min([np.linalg.norm(x-s) for s in samples])
                 distance_to_edge = radius - np.linalg.norm(x-center)
                 nearest_distance = min(nearest_distance_to_sample, distance_to_edge/a)
@@ -158,7 +197,7 @@ def sample_points_TIS(center, radius, f, samples, bounds, ineq_coeff, N = 10, \
     
     return new_samples, func_eval, g_eval, feas
 
-def sample_points_TIP(center, radius, f, samples, ineq_list, bounds, N = 10, \
+def sample_points_TIP(center, radius, f, samples, ineq_list, bounds, a=0.1, N = 10, \
                       ineq_active = False):
     
     # Because we initialise new_samples with the center, we find new_samples
@@ -167,7 +206,7 @@ def sample_points_TIP(center, radius, f, samples, ineq_list, bounds, N = 10, \
     
     while len(new_samples) < N + 1:
         
-        def closest_distance_edge(x):  
+        def closest_distance_edge(x, a=a):  
             nearest_distance_to_sample = min([np.linalg.norm(x-s) for s in samples])
             distance_to_edge = radius - np.linalg.norm(x-center)
             nearest_distance = min(nearest_distance_to_sample, distance_to_edge/a)

@@ -173,6 +173,7 @@ class CUATRO():
         max_f_eval: int = 100,
         rnd: int = 1,
         n_pls: int = None,
+        n_t: int = 5,
         prior_evals: dict = {'X_samples_list' : [], 'f_eval_list': [], 'g_eval_list': [], 'bounds': [], 'x0_method': 'best eval'}
     ):
         
@@ -181,8 +182,12 @@ class CUATRO():
             self.init_radius = new_rad
 
         if self.dim_red:
-            from CUATRO.optimizer.implementations.dim_red_heuristics.CUATRO_PLS import CUATRO_PLS
-            output = CUATRO_PLS().optimise(sim, x0, constraints, bounds, max_f_eval, rnd, n_pls, prior_evals) 
+            if self.sampling=='g':
+                from CUATRO.optimizer.implementations.dim_red_heuristics.CUATRO_PLS import CUATRO_PLS
+                output = CUATRO_PLS().optimise(sim, x0, constraints, bounds, max_f_eval, rnd, n_pls, prior_evals) 
+            else:
+                from CUATRO.optimizer.implementations.dim_red_heuristics.CUATRO_PLS_explore import CUATRO_PLS_expl
+                output = CUATRO_PLS_expl().optimise(sim, x0, constraints, bounds, max_f_eval, rnd, n_pls, n_t, prior_evals) 
 
         elif self.sampling == 'g':
             if self.explore != None:

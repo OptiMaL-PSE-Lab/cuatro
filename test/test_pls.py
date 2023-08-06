@@ -65,13 +65,14 @@ conv_rad = 0.01
 bounds = np.array([(-5.0, 5.0) for i in range(N_high)])
 x0 = np.array([(b[0] + b[1])/2 for b in bounds]) 
 init_radius = np.max([(b[1] - b[0])/5 for b in bounds]) ## change back
+n_t = 5
 beta = 1e-3**(1/N)
 N_min_s = N/10
 tol= 1e-8
 
 CUATRO_inst = CUATRO(sampling='g', explore=None, method='local', N_min_samples=6, beta_red=beta, tolerance=tol, init_radius=init_radius, dim_red=True)
+CUATRO_PLS_expl = CUATRO(sampling='base', explore=None, method='local', N_min_samples=6, beta_red=beta, tolerance=tol, init_radius=init_radius, dim_red=True)
 CUATRO_bench = CUATRO(sampling='g', explore=None, method='local', N_min_samples=N_min_s, beta_red=beta, tolerance=tol, init_radius=init_radius)
-
 
 f_RB = partial(sim, N_high)
 f_quadr = partial(sim_quadr, N_high)
@@ -85,7 +86,6 @@ class TestConvergence_PLS_CUATRO(unittest.TestCase):
         res_bench = CUATRO_bench.run_optimiser(sim=f_RB, x0=x0, bounds=bounds, max_f_eval=N, rnd=0)
         print(f"Best objective found: {res['f_best_so_far'][-1]} compared to baseline CUATRO {res_bench['f_best_so_far'][-1]}")
         self.assertTrue((res['f_best_so_far'][-1]  < res_bench['f_best_so_far'][-1]), f"CUATRO_PLS did not outperform CUATRO_g at high dimension: {res['f_best_so_far'][-1]} > {res_bench['f_best_so_far'][-1]}")
-    
 
 class TestConvergence_PLS_quadr(unittest.TestCase):   
     def runTest(self):
@@ -95,6 +95,13 @@ class TestConvergence_PLS_quadr(unittest.TestCase):
         res = CUATRO_inst.run_optimiser(sim=f_quadr, x0=x0, bounds=bounds, max_f_eval=N, rnd=0, n_pls=N_pls)
         print(f"Objective: {res['f_best_so_far'][-1]}")
         self.assertTrue((abs(res['f_best_so_far'][-1] - optimum)**2 < conv_rad), f"CUATRO_g did not converge to {conv_rad} accuracy for a budget of {N}; best_f: {res['f_best_so_far'][-1]}, optimum: {optimum}")
-        
-        
+
+class TestConvergence_PLS_expl_quadr(unittest.TestCase):   
+    def runTest(self):
+        """
+        check whether convergence is achieved for the quadratic test function in high dimensions
+        """  
+        res = CUATRO_PLS_expl.run_optimiser(sim=f_quadr, x0=x0, bounds=bounds, max_f_eval=N, rnd=0, n_pls=N_pls, n_t=n_t)
+        print(f"Objective: {res['f_best_so_far'][-1]}")
+        self.assertTrue((abs(res['f_best_so_far'][-1] - optimum)**2 < conv_rad), f"CUATRO_g did not converge to {conv_rad} accuracy for a budget of {N}; best_f: {res['f_best_so_far'][-1]}, optimum: {optimum}")
 

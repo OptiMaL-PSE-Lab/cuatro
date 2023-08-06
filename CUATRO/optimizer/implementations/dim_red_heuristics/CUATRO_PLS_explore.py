@@ -6,7 +6,7 @@ Created on Sun Jan 17 21:12:38 2021
 """
 
 import CUATRO.utilities as ut
-from CUATRO.samplers.sampling import sample_LHS, sample_points
+from CUATRO.samplers.sampling import sample_LHS, sample_points, sample_points_expl
 from CUATRO.minimise_methods.minimise import minimise, minimise_PLS
 from CUATRO.optimizer.CUATRO_optimizer_use import CUATRO
 
@@ -23,7 +23,7 @@ from typing import Optional
 
 warnings.filterwarnings('ignore')
 
-class CUATRO_PLS(CUATRO):
+class CUATRO_PLS_expl(CUATRO):
     def __init__(self):
         super().__init__()
         
@@ -36,18 +36,20 @@ class CUATRO_PLS(CUATRO):
         max_f_eval: int = 100,
         rnd: int = 1,
         n_pls: int = None, # effective dimensionality inputted to pls
+        n_t: int = 5,
         prior_evals: dict = {'X_samples_list' : [], 'f_eval_list': [], 'g_eval_list': [], 'bounds': [], 'x0_method': 'best eval'}
     ):
 
         if not (constraints is None or constraints in [[], [0]]):
             raise NotImplementedError("CUATRO_PLS is not yet implemented for explicit constraint handling \n Use soft penalizations to handle constraints and set constraints to None")
 
-        if prior_evals['g_eval_list']!= []:
-            raise NotImplementedError("CUATRO_PLS is not yet implemented for explicit constraint handling \n g_eval_list in prior_evals should be an empty list")
-    
+        traj_budget = int(max_f_eval/n_t)
 
         if n_pls is None: # if no knowledge about n_e is given, use heuristics to determine effective dim.
             n_pls = int(max_f_eval / 10)
+
+        if prior_evals['g_eval_list']!= []:
+            raise NotImplementedError("CUATRO_PLS is not yet implemented for explicit constraint handling \n g_eval_list in prior_evals should be an empty list")
 
         if (len(prior_evals['X_samples_list']) == 0) and (not (isinstance(x0, np.ndarray))):
             raise ValueError("You've specified neither prior function evaluations nor a valid x0 array")
@@ -220,6 +222,9 @@ class CUATRO_PLS(CUATRO):
     
         # t1 = time.process_time() 
         # t_it = []; t_center_select = []; t_sample = []; t_minimise = []
+
+        traj_counter = 0
+
         while ((len(f_eval_list) - len(prior_evals['f_eval_list'])) < max_f_eval - 1)  and (radius > self.tolerance):
             # ti = time.process_time()
             N_evals = len(f_eval_list) - len(prior_evals['f_eval_list'])
@@ -348,6 +353,53 @@ class CUATRO_PLS(CUATRO):
             # t_minimise += [time.process_time()-tiii]  
             N += 1
             # t_it += [time.process_time() - ti] # Processing time at each iteration
+
+            if (len(f_eval_list) - len(prior_evals['f_eval_list'])) >= (traj_counter+1)*traj_budget:
+                
+                traj_counter += 1
+                # compute radius of sphere encompassing all bounds from center of search space
+                bounds_dummy = np.array([(b[1]-b[0])/2 for b in bounds])
+                two_biggest = np.sort(bounds_dummy)[::-1][:2]
+                dummy_radius = np.sqrt(two_biggest[0]**2+two_biggest[1]**2) if len(bounds) >= 2 else two_biggest[0]
+                # sample new starting point that is furthest away from current samples but not too close to the bounds
+                center_dummy = np.array([(b[1]+b[0])/2 for b in bounds])
+
+                X_samples, y_samples, g_eval, feas_samples =  sample_points_expl(center_dummy,  sim, \
+                                                                            X_samples_list, \
+                                                                            bounds, a=1, N = 1)
+
+                center = X_samples.squeeze()
+                center = [float(c) for c in center]
+
+                feas_new_X = X_samples.copy()[feas_samples == 1]
+                infeas_new_X = X_samples.copy()[feas_samples != 1]
+
+                no_of_feas_X += len(feas_new_X)
+                no_of_infeas_X += len(infeas_new_X)
+
+                X_samples_list += X_samples.tolist()
+                f_eval_list += y_samples
+                g_eval_list += g_eval
+
+                radius = self.init_radius
+
+                X_in_trust, y_in_trust, g_in_trust, feas_in_trust = ut.samples_in_trust(center, radius, 
+                                                                    X_samples_list, f_eval_list, g_eval_list)
+
+                old_trust = center
+                old_f = float(y_samples[0])
+
+                # print(X_samples, center_dummy, dummy_radius, bounds[0])
+
+                # print(len(X_samples_list))
+        
+                # import matplotlib.pyplot as plt
+                # plt.clf()
+                # plt.scatter(np.array(X_samples_list)[:-1,0], np.array(X_samples_list)[:-1,1], c='k')
+                # plt.scatter(center[0], center[1], c='r')
+                # plt.show()
+
+
 
         N_evals = len(f_eval_list) - len(prior_evals['f_eval_list'])
         radius_list += [radius] 
