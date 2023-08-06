@@ -82,7 +82,7 @@ class CUATRO():
         print_status: str = False,
         constr_handling: str = 'Discrimination',
         sampling: str = 'g',
-        dim_red = False,
+        dim_red = None, # in [None,'PLS','explore','embed']
         explore: Optional[str] = None,
         sampling_trust_ratio: list = [0.1, 0.9],
         min_radius: int = 0.05,
@@ -91,7 +91,7 @@ class CUATRO():
         no_x0: int = 5,
         rescale_radius: bool = False, # TODO: default should be true + change it to new implementation
         solver_to_use: str = 'SCS',
-        automatic_params: Optional[dict] = None
+        automatic_params: Optional[dict] = None,
     ):
         
         self.init_radius = init_radius
@@ -181,13 +181,18 @@ class CUATRO():
             new_rad = rescale_radius(self.init_radius, bounds)
             self.init_radius = new_rad
 
-        if self.dim_red:
-            if self.sampling=='g':
+        if self.dim_red is not None:
+            if self.dim_red=='PLS':
                 from CUATRO.optimizer.implementations.dim_red_heuristics.CUATRO_PLS import CUATRO_PLS
                 output = CUATRO_PLS().optimise(sim, x0, constraints, bounds, max_f_eval, rnd, n_pls, prior_evals) 
-            else:
+            elif self.dim_red=='explore':
                 from CUATRO.optimizer.implementations.dim_red_heuristics.CUATRO_PLS_explore import CUATRO_PLS_expl
-                output = CUATRO_PLS_expl().optimise(sim, x0, constraints, bounds, max_f_eval, rnd, n_pls, n_t, prior_evals) 
+                output = CUATRO_PLS_expl().optimise(sim, x0, constraints, bounds, max_f_eval, rnd, n_pls, n_t, prior_evals)
+            elif self.dim_red=='embed':
+                from CUATRO.optimizer.implementations.dim_red_heuristics.CUATRO_embedding import CUATRO_embedding
+                output = CUATRO_embedding().optimise(sim, x0, constraints, bounds, max_f_eval, rnd, n_pls, prior_evals)
+            else:
+                raise NotImplementedError("Not yet implemented. dim_red should be in ['PLS', 'explore', 'embed']")
 
         elif self.sampling == 'g':
             if self.explore != None:
