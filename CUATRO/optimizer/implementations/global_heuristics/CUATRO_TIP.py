@@ -166,6 +166,8 @@ class CUATRO_TIP(CUATRO):
                 else:
                     if (dec >= self.eta2*pred_dec) and step_size - radius < 1e-8:
                         radius *= self.beta_inc
+                        print(f'TR update: iteration {N}, objective {new_f:.3f}, evaluation {len(f_eval_list)}')
+
         
                     elif dec <= self.eta1*pred_dec:
                         radius *= self.beta_red

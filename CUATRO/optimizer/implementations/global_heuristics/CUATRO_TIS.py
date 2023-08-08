@@ -137,7 +137,7 @@ class CUATRO_TIS(CUATRO):
             X_samples = np.array(X_samples.copy().tolist() + X_in_trust.copy().tolist())
             y_samples = y_samples.copy() + y_in_trust.copy().tolist()
             g_eval = g_eval.copy() + g_in_trust.copy().tolist()
-            feas = np.array(feas_in_trust.copy().tolist() + feas.copy().tolist())
+            feas = np.array(feas.copy().tolist() + feas_in_trust.copy().tolist())
 
 
         else:
@@ -228,6 +228,8 @@ class CUATRO_TIS(CUATRO):
                         old_trust = center
                         f_change_list += [old_f - new_f]
                         old_f = new_f
+                        print(f'TR update: iteration {N}, objective {new_f:.3f}, evaluation {len(f_eval_list)}')
+
         
                     elif dec <= self.eta1*pred_dec:
                         radius *= self.beta_red
@@ -238,6 +240,8 @@ class CUATRO_TIS(CUATRO):
                         old_trust = center
                         f_change_list += [old_f - new_f]
                         old_f = new_f
+                        print(f'TR update: iteration {N}, objective {new_f:.3f}, evaluation {len(f_eval_list)}')
+
             
             
             steps += [center] 

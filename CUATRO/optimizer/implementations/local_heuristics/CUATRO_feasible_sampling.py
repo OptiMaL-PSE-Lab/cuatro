@@ -168,7 +168,7 @@ class CUATRO_feas_samp(CUATRO):
             X_samples = np.array(X_samples.copy().tolist() + X_in_trust.copy().tolist())
             y_samples = y_samples.copy() + y_in_trust.copy().tolist()
             g_eval = g_eval.copy() + g_in_trust.copy().tolist()
-            feas = np.array(feas_in_trust.copy().tolist() + feas.copy().tolist())
+            feas = np.array(feas.copy().tolist() + feas_in_trust.copy().tolist())
 
         else:
             X_samples = X_in_trust.copy()
@@ -243,6 +243,7 @@ class CUATRO_feas_samp(CUATRO):
                     radius *= self.beta_inc
                     old_trust = center
                     old_f = new_f
+                    print(f'TR update: iteration {N}, objective {new_f:.3f}, evaluation {len(f_eval_list)}')
 
                 elif dec <= self.eta1*pred_dec:
                     radius *= self.beta_red
@@ -250,6 +251,7 @@ class CUATRO_feas_samp(CUATRO):
                 else:
                     old_trust = center
                     old_f = new_f
+                    print(f'TR update: iteration {N}, objective {new_f:.3f}, evaluation {len(f_eval_list)}')
         
             steps += [center] 
             radius_list += [radius]
