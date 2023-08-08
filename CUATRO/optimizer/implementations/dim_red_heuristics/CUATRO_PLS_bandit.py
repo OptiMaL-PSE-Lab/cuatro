@@ -161,7 +161,7 @@ class CUATRO_PLS_bandit(CUATRO):
                 X_samples = np.array(X_samples.copy().tolist() + X_in_trust.copy().tolist())
                 y_samples = y_samples.copy() + y_in_trust.copy().tolist()
                 g_eval = g_eval.copy() + g_in_trust.copy().tolist()
-                feas = np.array(feas_in_trust.copy().tolist() + feas.copy().tolist())
+                feas = np.array(feas.copy().tolist() + feas_in_trust.copy().tolist())
 
             else:
                 X_samples = X_in_trust.copy()
@@ -260,6 +260,7 @@ class CUATRO_PLS_bandit(CUATRO):
                     trusts[best_TR]['old_trust'] = trusts[best_TR]['candidate']
                     trusts[best_TR]['center'] = trusts[best_TR]['candidate']
                     trusts[best_TR]['old_f'] = new_f
+                    print(f'TR {best_TR} update: iteration {N}, objective {new_f:.3f}, evaluation {len(f_eval_list)}')
                 elif trusts[best_TR]['dec'] <= self.eta1*trusts[best_TR]['pred_dec']:
                     trusts[best_TR]['radius'] *= self.beta_red
                     trusts[best_TR]['center'] = trusts[best_TR]['old_trust']
@@ -267,6 +268,7 @@ class CUATRO_PLS_bandit(CUATRO):
                     trusts[best_TR]['old_trust'] = trusts[best_TR]['candidate']
                     trusts[best_TR]['center'] = trusts[best_TR]['candidate']
                     trusts[best_TR]['old_f'] = new_f
+                    print(f'TR {best_TR} update: iteration {N}, objective {new_f:.3f}, evaluation {len(f_eval_list)}')
 
 
             steps += [center]         
@@ -338,7 +340,7 @@ class CUATRO_PLS_bandit(CUATRO):
                         X_samples = np.array(X_samples.copy().tolist() + X_in_trust.copy().tolist())
                         y_samples = y_samples.copy() + y_in_trust.copy().tolist()
                         g_eval = g_eval.copy() + g_in_trust.copy().tolist()
-                        feas = np.array(feas_in_trust.copy().tolist() + feas.copy().tolist()) ### TODO
+                        feas = np.array(feas.copy().tolist() + feas_in_trust.copy().tolist())
 
                     else:
                         X_samples = np.array(X_in_trust.copy().tolist())

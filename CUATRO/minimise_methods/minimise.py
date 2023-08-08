@@ -48,42 +48,42 @@ def minimise(X_samples, feas_X, infeas_X, g_array, P, q, r, bounds, center, radi
             except:
                 P = ut.make_PSD(P)
                 # logger.warn("Failed to find center by minimising quadratic surrogate (found feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
-                print(f"Failed to find center by minimising quadratic surrogate (found feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
+                # print(f"Failed to find center by minimising quadratic surrogate (found feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
                 # print(P)
                 try:
                     center_ = list(ut.quadratic_min(P, q, r, center, radius, bounds, solver_to_use, \
                                ineq = ineq_list))
                 except:
                     center_ = center
-                    print(f"Failed to find center by minimising quadratic surrogate, even after updating P (found feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
+                    print(f"Step failed to find center by minimising quadratic surrogate, even after updating P (found feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
                     # logger.warn("Failed to find center by minimising quadratic surrogate, even after updating P (found feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
         else:
             try:
                 center_ = list(ut.quadratic_min(P, q, r, center, radius, bounds, solver_to_use))
             except:
                 P = ut.make_PSD(P)
-                print(f"Failed to find center by minimising quadratic surrogate (failed to find feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
+                # print(f"Failed to find center by minimising quadratic surrogate (failed to find feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
                 # logger.warn("Failed to find center by minimising quadratic surrogate (failed to find feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
                 # print(P)
                 try:
                     center_ = list(ut.quadratic_min(P, q, r, center, radius, bounds, solver_to_use))
                 except:
                     center_ = center
-                    print(f"Failed to find center by minimising quadratic surrogate, even after updating P (failed to find feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
+                    print(f"Step failed to find center by minimising quadratic surrogate, even after updating P (failed to find feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
                     # logger.warn("Failed to find center by minimising quadratic surrogate, even after updating P (failed to find feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
     else:
         try:
             center_ = list(ut.quadratic_min(P, q, r, center, radius, bounds, solver_to_use))
         except:
             P = ut.make_PSD(P)
-            print(f"Failed to find center by minimising quadratic surrogate (all samples were feasible). N_evals: {N_eval}. N_iter: {N_iter}")
+            # print(f"Failed to find center by minimising quadratic surrogate (all samples were feasible). N_evals: {N_eval}. N_iter: {N_iter}")
             # logger.warn("Failed to find center by minimising quadratic surrogate (all samples were feasible)")
             # print(P)
             try:
                 center_ = list(ut.quadratic_min(P, q, r, center, radius, bounds, solver_to_use))
             except:
                 center_ = center
-                print(f"Failed to find center by minimising quadratic surrogate, even after updating P (all samples were feasible)). N_evals: {N_eval}. N_iter: {N_iter}")
+                print(f"Step failed to find center by minimising quadratic surrogate, even after updating P (all samples were feasible)). N_evals: {N_eval}. N_iter: {N_iter}")
                 # logger.warn("Failed to find center by minimising quadratic surrogate, even after updating P (all samples were feasible))")
     return center_
 
@@ -398,35 +398,35 @@ def minimise_PLS(X_samples, feas_X, infeas_X, g_array, P, q, r, bounds, center, 
             except:
                 P = ut.make_PSD(P)
                 # logger.warn("Failed to find center by minimising quadratic surrogate (found feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
-                print(f"Failed to find center by minimising quadratic surrogate (found feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
+                # print(f"Failed to find center by minimising quadratic surrogate (found feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
                 # print(P)
                 try:
                     center_ = list(ut.quadratic_min(P, q, r, center, radius, bounds, solver_to_use, \
                                ineq = ineq_list))
                 except:
                     center_ = center
-                    print(f"Failed to find center by minimising quadratic surrogate, even after updating P (found feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
+                    print(f"Step failed to find center by minimising quadratic surrogate, even after updating P (found feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
                     # logger.warn("Failed to find center by minimising quadratic surrogate, even after updating P (found feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
         else:
             try:
                 center_ = list(ut.quadratic_min(P, q, r, center, radius, bounds, solver_to_use))
             except:
                 P = ut.make_PSD(P)
-                print(f"Failed to find center by minimising quadratic surrogate (failed to find feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
+                # print(f"Failed to find center by minimising quadratic surrogate (failed to find feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
                 # logger.warn("Failed to find center by minimising quadratic surrogate (failed to find feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
                 # print(P)
                 try:
                     center_ = list(ut.quadratic_min(P, q, r, center, radius, bounds, solver_to_use))
                 except:
                     center_ = center
-                    print(f"Failed to find center by minimising quadratic surrogate, even after updating P (failed to find feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
+                    print(f"Step failed to find center by minimising quadratic surrogate, even after updating P (failed to find feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
                     # logger.warn("Failed to find center by minimising quadratic surrogate, even after updating P (failed to find feasible coefficients by discrimination previously). N_evals: {N_eval}. N_iter: {N_iter}")
     else:
         try:
             center_ = list(ut.quadratic_min_pls(P, q, r, center, center_pls, radius, bounds, solver_to_use, pls))
         except:
             P = ut.make_PSD(P)
-            print(f"Failed to find center by minimising quadratic surrogate (all samples were feasible). N_evals: {N_eval}. N_iter: {N_iter}")
+            print(f"Step failed to find center by minimising quadratic surrogate (all samples were feasible). N_evals: {N_eval}. N_iter: {N_iter}")
             # logger.warn("Failed to find center by minimising quadratic surrogate (all samples were feasible)")
             # print(P)
             # try:

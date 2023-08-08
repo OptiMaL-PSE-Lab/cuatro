@@ -81,6 +81,8 @@ for dim in dims:
         perf_res['base'] += [res_g['f_best_so_far'][-1]]
         time_res['base'] += [t2-t1]
 
+    if dim < 600:
+
         t0 = perf_counter()
         res_PLS_bandit = CUATRO_PLS_bandit.run_optimiser(sim=obj, x0=x0, bounds=bounds, max_f_eval=budget, rnd=0, n_pls=n_e)
         t1 = perf_counter()
