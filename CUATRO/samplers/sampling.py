@@ -24,7 +24,7 @@ def sample_LHS(sim, bounds, N, rnd_seed = 1):
     return data_points, func_eval, g_eval, feas
 
 
-def sample_points_expl(center, f, samples, bounds, a = 0.1, N = 10): 
+def sample_points_expl(center, f, samples, bounds, a = 0.1, N = 10, candidates=2000): 
     # used for:
     # base, sampling_region, exploit_explore
     new_samples = np.array([center])
@@ -38,7 +38,7 @@ def sample_points_expl(center, f, samples, bounds, a = 0.1, N = 10):
             nearest_distance = min(nearest_distance_to_sample, bounds_dist/a)
             return -nearest_distance
         
-        initial_points = LHS(bounds, min(2000, 100*len(bounds))).T
+        initial_points = LHS(bounds, min(candidates, 100*len(bounds))).T
         # print(initial_points[:4])
         closest_distances = [closest_distance_edge(p) for p in initial_points]
         ind_best_distance = np.argmin(closest_distances)

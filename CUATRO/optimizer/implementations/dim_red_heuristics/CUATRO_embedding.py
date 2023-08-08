@@ -249,7 +249,7 @@ class CUATRO_embedding(CUATRO):
                     radius *= self.beta_red
                     center = old_trust
                 else:
-                    if (dec >= self.eta2*pred_dec) and (abs(np.linalg.norm(np.array(old_trust) - np.array(center)) - radius) < 1e-8).any():
+                    if (dec >= self.eta2*pred_dec):
                         radius *= self.beta_inc
                         old_trust = center
                         old_f = new_f

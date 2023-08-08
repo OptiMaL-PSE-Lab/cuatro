@@ -82,7 +82,7 @@ class CUATRO():
         print_status: str = False,
         constr_handling: str = 'Discrimination',
         sampling: str = 'g',
-        dim_red = None, # in [None,'PLS','explore','embed']
+        dim_red = None, # in [None,'PLS','explore','embed', 'bandit']
         explore: Optional[str] = None,
         sampling_trust_ratio: list = [0.1, 0.9],
         min_radius: int = 0.05,
@@ -191,8 +191,11 @@ class CUATRO():
             elif self.dim_red=='embed':
                 from CUATRO.optimizer.implementations.dim_red_heuristics.CUATRO_embedding import CUATRO_embedding
                 output = CUATRO_embedding().optimise(sim, x0, constraints, bounds, max_f_eval, rnd, n_pls, prior_evals)
+            elif self.dim_red=='bandit':
+                from CUATRO.optimizer.implementations.dim_red_heuristics.CUATRO_PLS_bandit import CUATRO_PLS_bandit
+                output = CUATRO_PLS_bandit().optimise(sim, x0, constraints, bounds, max_f_eval, rnd, n_pls, n_t, prior_evals)
             else:
-                raise NotImplementedError("Not yet implemented. dim_red should be in ['PLS', 'explore', 'embed']")
+                raise NotImplementedError("Not yet implemented. dim_red should be in ['PLS', 'explore', 'embed', 'bandit']")
 
         elif self.sampling == 'g':
             if self.explore != None:
