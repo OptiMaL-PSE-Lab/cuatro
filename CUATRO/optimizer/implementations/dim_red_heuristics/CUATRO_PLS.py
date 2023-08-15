@@ -24,8 +24,8 @@ from typing import Optional
 warnings.filterwarnings('ignore')
 
 class CUATRO_PLS(CUATRO):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, CUATRO_instance):
+        super().__init__(**vars(CUATRO_instance))
         
     def optimise(
         self,
@@ -90,8 +90,7 @@ class CUATRO_PLS(CUATRO):
 
         radius = self.init_radius
         center = [float(c) for c in center_]
-        
-        
+
         f_eval, g_eval, feas = ut.sample_simulation(center, sim)
         new_f = f_eval[0]
 

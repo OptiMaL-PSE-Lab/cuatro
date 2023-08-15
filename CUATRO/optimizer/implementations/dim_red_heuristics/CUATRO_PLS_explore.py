@@ -24,8 +24,8 @@ from typing import Optional
 warnings.filterwarnings('ignore')
 
 class CUATRO_PLS_expl(CUATRO):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, CUATRO_instance):
+        super().__init__(**vars(CUATRO_instance))
         
     def optimise(
         self,

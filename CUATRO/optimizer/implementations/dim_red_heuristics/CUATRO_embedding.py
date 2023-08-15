@@ -24,8 +24,8 @@ warnings.filterwarnings('ignore')
 
 
 class CUATRO_embedding(CUATRO):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, CUATRO_instance):
+        super().__init__(**vars(CUATRO_instance))
 
     def _scaling_properties(self, X):
         return X.mean(axis=0), X.std(axis=0, ddof=1)
@@ -76,6 +76,8 @@ class CUATRO_embedding(CUATRO):
 
         if prior_evals['x0_method'] not in ['best eval', 'bound center']:
             raise ValueError('Please enter a valid method of obtaining the initial guess value')
+
+
 
 
         X_samples_list = prior_evals['X_samples_list'].copy()

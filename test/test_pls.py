@@ -66,7 +66,7 @@ bounds = np.array([(-5.0, 5.0) for i in range(N_high)])
 x0 = np.array([(b[0] + b[1])/2 for b in bounds]) 
 init_radius = np.max([(b[1] - b[0])/5 for b in bounds]) ## change back
 n_t = 5
-beta = 1e-3**(1/N)
+beta = 1e-3**(2/N)
 N_min_s = N/10
 tol= 1e-8
 
