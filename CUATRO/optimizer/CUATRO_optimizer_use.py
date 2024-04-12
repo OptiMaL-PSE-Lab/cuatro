@@ -40,32 +40,15 @@ class CUATRO():
     
     rescale_radius:   True / False, default: False
 
+    dim_red:          High-dimensional subspace method. Not compatible with constraints yet
+                      Possible values: None, 'PLS', 'explore', 'embed', 'bandit'. Default: None
+
     solver_to_use:    solver to be used in quadratic fitting, discrimination and minimisation
                       Possible values: 'SCS', 'MOSEK'. Default: 'SCS'
 
     automatic_params: dictionary specifying the data based on which hyperparameters should be set automatically TODO: clarify this
 
 
-
-    OUTPUTS
-    ------------------------------------
-    output_dict: 
-        - 'x'           : final input variable
-            
-        - 'f'           : final function value
-            
-        - 'f_evals'     : total number of function evaluations
-            
-        - 'f_store'     : best function value at each iteration
-                                
-        - 'x_store'     : list of all previous best variables (per iteration)
-                                
-        - 'g_store'     : list of all previous constraint values (per iteration)
-            
-        - 'g_viol'      : total constraint violation (sum over constraints)
-        
-    NOTES
-    --------------------------------------
 
     '''
 
