@@ -69,8 +69,6 @@ solver_instance = CUATRO(
                     explore = 'feasible_sampling', 
                     # reject exploration samples that are predicted to violate constraints
                 )
-
-    
  
 res = solver_instance.run_optimiser(sim=sim, x0=f.x0, bounds=f.bounds, max_f_eval=budget, )
 print(res['f_best_so_far'], res['x_best_so_far'])
