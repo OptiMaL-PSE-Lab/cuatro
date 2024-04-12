@@ -19,8 +19,8 @@ Let's start by defining our black-box:
 ```
 class RB:
     def __init__(self, ):
-        self.bounds = np.array([(-2,2) for _ in range(2)])
-        self.x0 = np.array([[-1., -1.], [-1., 1.]])
+        self.bounds = np.array([(-2,2) for _ in range(2)]) 
+        self.x0 = np.array([-1., -1.])
         
     def rosenbrock_(self, x):
         x = np.array(x).squeeze()
@@ -46,4 +46,54 @@ CUATRO only accepts simulations which take the vector of decision-variables as i
 def f(x)
   return obj(x), [g1(x), g2(x), ...]
 ```
-the list should remain empty if the black-box contains evaluates no constraints.
+the list should remain empty if the black-box contains evaluates no constraints. Consequently, we call the CUATRO optimizer as follows:
+
+```
+import numpy as np
+from CUATRO.optimizer.CUATRO_optimizer_use import CUATRO
+
+f = RB()
+def sim(x): return f.fun_test(x), f.con_test(x)
+
+budget = 100
+solver_instance = CUATRO(
+                    init_radius = 0.1, # how much radius should the initial area cover 
+                    beta_red = 0.001**(2/f_eval_), # trust region radius reduction heuristic
+                    rescale_radius=True, # scale radii to unit box
+                    method = 'local',
+                    N_min_samples = 6, # 
+                    constr_handling = 'Discrimination', # or 'Regression'
+                    sampling = 'base', # maximize closest distance in trust region exploration
+                    explore = 'feasible_sampling', 
+                    # reject exploration samples that are predicted to violate constraints
+                )
+    
+ 
+    res = solver_instance.run_optimiser(sim=sim, x0=f.x0, bounds=f.bounds, max_f_eval=budget, )
+    print(res['f_best_so_far'], res['x_best_so_far'])
+
+```
+
+Here, we first define the black-box simulation `sim`, before defining the CUATRO solver instance options - note that this optimization should still work if CUATRO() is empty. We define the initial guess x0 as a numpy array of size d, and the box bounds as a list of d tuples containing the upper and lower bound on the decision variables.
+The solver instance is then run and we print the best objective evaluation and decision variables found in the budget of 100 evaluations. 
+
+### Citing
+
+If this repository is used in published work, please cite as:
+
+```
+@article{VANDEBERG2022117135,
+title = {Data-driven optimization for process systems engineering applications},
+journal = {Chemical Engineering Science},
+volume = {248},
+pages = {117135},
+year = {2022},
+issn = {0009-2509},
+doi = {https://doi.org/10.1016/j.ces.2021.117135},
+url = {https://www.sciencedirect.com/science/article/pii/S0009250921007004},
+author = {Damien {van de Berg} and Thomas Savage and Panagiotis Petsagkourakis and Dongda Zhang and Nilay Shah and Ehecatl Antonio {del Rio-Chanona}},
+}
+```
+
+
+
