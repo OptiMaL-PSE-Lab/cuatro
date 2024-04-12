@@ -78,7 +78,7 @@ print(res['f_best_so_far'], res['x_best_so_far'])
 Here, we first define the black-box simulation `sim` before setting the CUATRO solver configuration. We define the initial guess `f.x0` as a numpy array of size d, and the box bounds `f.bounds` as a list of d tuples containing the upper and lower bound on the decision variables.
 The solver instance is then run and we print the best objective evaluation and decision variables found in the budget of 100 evaluations. Other interesting arguments include 'constr_violation', 'radius_list', 'f_eval_list', 'x_eval_list'.
 
-A comprehensive list of solver configurations and solver results can be found under 
+The documentation of `CUATRO/optimizer/CUATRO_optimizer_use.py` contains more information on possible solver configurations.
 
 ### Citing
 
