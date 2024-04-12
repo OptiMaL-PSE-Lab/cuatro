@@ -4,6 +4,7 @@ As a quadratic model-based derivative-free optimization solver, CUATRO (short fo
 ## Installation and dependencies
 
 Using `conda env create --file environment.yml` will recreate an environment with the required dependencies.
+
 Running `pip install -e .` from the project directory installs CUATRO as a package.
 
 ## Tests
