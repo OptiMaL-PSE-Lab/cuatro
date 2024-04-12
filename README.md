@@ -1,5 +1,5 @@
 # CUATRO
-Convex qUAdratic Trust-Region Optimizer - As a quadratic model-based derivative-free optimization solver, CUATRO is similar to COBYQA and Py-BOBYQA, but with different routines to optimize black-box optimization problems that frequently arise within chemical engineering applications: explicit constraint handling, noisy evaluations, high-dimensional decision spaces, safe constraint satisfaction, and sample-efficient trust region exploration.
+As a quadratic model-based derivative-free optimization solver, CUATRO (short for Convex qUAdratic Trust-Region Optimizer) is similar to COBYQA and Py-BOBYQA, but with different routines to optimize black-box optimization problems that frequently arise within chemical engineering applications: explicit constraint handling, noisy evaluations, high-dimensional decision spaces, safe constraint satisfaction, and sample-efficient trust region exploration.
 
 ## Installation and dependencies
 
@@ -17,6 +17,8 @@ Let's walk through another example where we want to use CUATRO to solve a constr
 Let's start by defining our black-box:
 
 ```
+import numpy as np
+
 class RB:
     def __init__(self, ):
         self.bounds = np.array([(-2,2) for _ in range(2)]) 
@@ -41,15 +43,14 @@ class RB:
         return x[0] + x[1] - 1.8
   ```
 
-CUATRO only accepts simulations which take the vector of decision-variables as input, and output a tuple of the objective evaluation and a list of the constraint evaluations: 
+CUATRO only accepts simulations which take the vector of decision-variables as input, and output a tuple of the objective evaluation and a list of the constraint evaluations such that each constraint evaluation should be below 0: 
 ```
 def f(x)
-  return obj(x), [g1(x), g2(x), ...]
+  return obj(x), [g1(x), g2(x)]
 ```
-the list should remain empty if the black-box contains evaluates no constraints. Consequently, we call the CUATRO optimizer as follows:
+the list should remain empty if the black-box evaluations are unconstrained. We then call the CUATRO optimizer as follows:
 
 ```
-import numpy as np
 from CUATRO.optimizer.CUATRO_optimizer_use import CUATRO
 
 f = RB()
@@ -58,7 +59,7 @@ def sim(x): return f.fun_test(x), f.con_test(x)
 budget = 100
 solver_instance = CUATRO(
                     init_radius = 0.1, # how much radius should the initial area cover 
-                    beta_red = 0.001**(2/f_eval_), # trust region radius reduction heuristic
+                    beta_red = 0.001**(2/budget), # trust region radius reduction heuristic
                     rescale_radius=True, # scale radii to unit box
                     method = 'local',
                     N_min_samples = 6, # 
@@ -67,6 +68,7 @@ solver_instance = CUATRO(
                     explore = 'feasible_sampling', 
                     # reject exploration samples that are predicted to violate constraints
                 )
+
     
  
     res = solver_instance.run_optimiser(sim=sim, x0=f.x0, bounds=f.bounds, max_f_eval=budget, )
@@ -74,8 +76,10 @@ solver_instance = CUATRO(
 
 ```
 
-Here, we first define the black-box simulation `sim`, before defining the CUATRO solver instance options - note that this optimization should still work if CUATRO() is empty. We define the initial guess x0 as a numpy array of size d, and the box bounds as a list of d tuples containing the upper and lower bound on the decision variables.
-The solver instance is then run and we print the best objective evaluation and decision variables found in the budget of 100 evaluations. 
+Here, we first define the black-box simulation `sim` before setting the CUATRO solver configuration. We define the initial guess `f.x0` as a numpy array of size d, and the box bounds `f.bounds` as a list of d tuples containing the upper and lower bound on the decision variables.
+The solver instance is then run and we print the best objective evaluation and decision variables found in the budget of 100 evaluations. Other interesting arguments include 'constr_violation', 'radius_list', 'f_eval_list', 'x_eval_list'.
+
+A comprehensive list of solver configurations and solver results can be found under 
 
 ### Citing
 
