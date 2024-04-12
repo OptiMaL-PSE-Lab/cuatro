@@ -12,12 +12,8 @@ class CUATRO():
     '''
     INPUTS
     ------------------------------------
-    f:                function to be optimised
         
     init_radius:      initial trust region radius
-        
-    constraints:      constraint functions in form [g1,g2,...,gm]
-                      all have form g(x) <= 0 and return g(x)
 
     sampling:         choose whether to implement MCD (Maximum Closest Distance}
                       for sample collection or not
