@@ -1,5 +1,5 @@
 # CUATRO
-As a quadratic model-based derivative-free optimization solver, CUATRO (short for Convex qUAdratic Trust-Region Optimizer) is similar to COBYQA and Py-BOBYQA, but with different routines to optimize black-box optimization problems that frequently arise within chemical engineering applications: explicit constraint handling, noisy evaluations, high-dimensional decision spaces, safe constraint satisfaction, and sample-efficient trust region exploration.
+As a quadratic model-based derivative-free optimization solver, CUATRO (short for Convex qUAdratic Trust-Region Optimizer) is similar to COBYQA and Py-BOBYQA, but with specialized routines for black-box optimization problems that frequently arise within chemical engineering applications: explicit constraint handling, noisy evaluations, high-dimensional decision spaces, safe constraint satisfaction, and sample-efficient trust region exploration.
 
 ## Installation and dependencies
 
