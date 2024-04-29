@@ -1,0 +1,38 @@
+[project]
+name = "cuatro"
+version = "0.1.2"
+description = "Convex qUAdratic Trust Region Optimizer."
+requires-python = "~=3.10"
+license = { file = "LICENSE" }
+readme = "README.md"
+authors = [{ name = "Damien van de Berg", email = "dv516@ic.ac.uk" }]
+keywords = [
+  "black-box optimization",
+  "high-dimensional",
+  "constraint satisfaction",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Natural Language :: English",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+  "Topic :: Scientific/Engineering :: Mathematics",
+]
+
+dynamic = ["dependencies"]
+[project.urls]
+Repository = "https://github.com/OptiMaL-PSE-Lab/cuatro"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"]}
+
+[project.optional-dependencies]
+optional = ["gurobi", "mosek"]

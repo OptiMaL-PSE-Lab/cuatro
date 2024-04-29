@@ -1,14 +1,12 @@
 import unittest
 from functools import partial
 
-from CUATRO.optimizer.CUATRO_optimizer_use import CUATRO
+from cuatro import CUATRO
 
 from scipy.optimize import minimize
 import numpy as np
 from scipy.stats import ortho_group
 
-from CUATRO.test_functions.constraints.rosenbrock_constrained import rosenbrock_g1
-from CUATRO.test_functions.constraints.rosenbrock_constrained import rosenbrock_g2
 
 def quadratic_f(x):
     '''

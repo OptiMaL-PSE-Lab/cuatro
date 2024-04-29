@@ -1,10 +1,8 @@
 import unittest
-
-from CUATRO.optimizer.CUATRO_optimizer_use import CUATRO
 import numpy as np
 
-from CUATRO.test_functions.constraints.rosenbrock_constrained import rosenbrock_g1
-from CUATRO.test_functions.constraints.rosenbrock_constrained import rosenbrock_g2
+from cuatro import CUATRO
+from cuatro.test_functions.constraints.rosenbrock_constrained import rosenbrock_g1
 
 
 def Rosenbrock(x):
@@ -14,7 +12,6 @@ def Rosenbrock(x):
 def sim(x):
     f1 = Rosenbrock
     g1 = rosenbrock_g1
-    g2 = rosenbrock_g2
     
     return f1(x), [g1(x)]
 
