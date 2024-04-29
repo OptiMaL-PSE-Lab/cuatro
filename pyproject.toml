@@ -1,8 +1,8 @@
 [project]
 name = "cuatro"
-version = "0.1.2"
+version = "0.1.3"
 description = "Convex qUAdratic Trust Region Optimizer."
-requires-python = "~=3.10"
+requires-python = ">=3.10"
 license = { file = "LICENSE" }
 readme = "README.md"
 authors = [{ name = "Damien van de Berg", email = "dv516@ic.ac.uk" }]
